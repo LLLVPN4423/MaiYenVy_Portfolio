@@ -30,7 +30,12 @@ components_corrupted_ignore
 # Media files (too large for git)
 public/media/
 public/videos/
-public/portrait.jpg
 
 # Selected media folder (for GitHub Pages)
 !public/media-selected/
+
+# Allow specific media files in public root
+!public/*.jpg
+!public/*.JPG
+!public/*.png
+!public/*.PNG
