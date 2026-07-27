@@ -31,3 +31,6 @@ components_corrupted_ignore
 public/media/
 public/videos/
 public/portrait.jpg
+
+# Selected media folder (for GitHub Pages)
+!public/media-selected/
