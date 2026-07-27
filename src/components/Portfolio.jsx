@@ -119,9 +119,9 @@ const Portfolio = () => {
     category: 'media',
     title: `Lễ hội Hàn Quốc ${index + 1}`,
     description: `Ảnh ${index + 1} từ bộ sự kiện Lễ hội văn hóa Hàn Quốc`,
-    thumbnail: `/${img}`,
+    thumbnail: `https://raw.githubusercontent.com/LLLVPN4423/MaiYenVy_Portfolio/main/public/${img}`,
     type: 'gallery',
-    fullImage: `/${img}`
+    fullImage: `https://raw.githubusercontent.com/LLLVPN4423/MaiYenVy_Portfolio/main/public/${img}`
   }))
 
   const volunteerProjects = volunteerImages.map((img, index) => ({
@@ -129,9 +129,9 @@ const Portfolio = () => {
     category: 'media',
     title: `Hoạt động tình nguyện ${index + 1}`,
     description: `Ảnh ${index + 1} từ bộ hoạt động tình nguyện`,
-    thumbnail: `/${img}`,
+    thumbnail: `https://raw.githubusercontent.com/LLLVPN4423/MaiYenVy_Portfolio/main/public/${img}`,
     type: 'gallery',
-    fullImage: `/${img}`
+    fullImage: `https://raw.githubusercontent.com/LLLVPN4423/MaiYenVy_Portfolio/main/public/${img}`
   }))
 
   const btsProjects = btsImages.map((img, index) => ({
@@ -139,9 +139,9 @@ const Portfolio = () => {
     category: 'media',
     title: `BTS Sự kiện ${index + 1}`,
     description: `Ảnh ${index + 1} từ bộ BTS hậu trường sự kiện`,
-    thumbnail: `/${img}`,
+    thumbnail: `https://raw.githubusercontent.com/LLLVPN4423/MaiYenVy_Portfolio/main/public/${img}`,
     type: 'gallery',
-    fullImage: `/${img}`
+    fullImage: `https://raw.githubusercontent.com/LLLVPN4423/MaiYenVy_Portfolio/main/public/${img}`
   }))
 
   const projects = [
@@ -151,7 +151,7 @@ const Portfolio = () => {
       category: 'editor',
       title: 'Kịch bản Tập Cuối',
       description: 'Biên tập và kịch bản cho video tập cuối với nội dung sáng tạo',
-      thumbnail: '/IMG_8307.jpg',
+      thumbnail: 'https://raw.githubusercontent.com/LLLVPN4423/MaiYenVy_Portfolio/main/public/IMG_8307.jpg',
       type: 'text',
     },
 
@@ -184,7 +184,7 @@ const Portfolio = () => {
       category: 'video',
       title: 'GALA - Phần 2',
       description: 'Video quay dựng cho sự kiện GALA phần 2',
-      thumbnail: '/IMG_8354.jpg',
+      thumbnail: 'https://raw.githubusercontent.com/LLLVPN4423/MaiYenVy_Portfolio/main/public/IMG_8354.jpg',
       type: 'video',
       videoUrl: '/videos/GALA - PHẦN 2.mp4',
     },
@@ -193,7 +193,7 @@ const Portfolio = () => {
       category: 'video',
       title: 'Lâm Kịch Tập Cuối',
       description: 'Video biên tập kịch bản tập cuối',
-      thumbnail: '/IMG_8414.jpg',
+      thumbnail: 'https://raw.githubusercontent.com/LLLVPN4423/MaiYenVy_Portfolio/main/public/IMG_8414.jpg',
       type: 'video',
       videoUrl: '/videos/LAMKICH_TAP CUOI_0406.mov',
     },
