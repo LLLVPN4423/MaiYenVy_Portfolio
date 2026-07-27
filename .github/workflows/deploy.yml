@@ -36,6 +36,11 @@ jobs:
       - name: Build
         run: npm run build
 
+      - name: Copy media files to dist
+        run: |
+          mkdir -p dist/media-selected
+          cp -r public/media-selected/* dist/media-selected/
+
       - name: Setup Pages
         uses: actions/configure-pages@v4
 
