@@ -47,7 +47,7 @@ const About = () => {
             <div className="relative">
               <div className="aspect-[3/4] bg-soft-beige-dark rounded-2xl overflow-hidden shadow-xl border-2 border-sea-blue-primary/20">
                 <img
-                  src="/portrait.jpg"
+                  src="/media-selected/portrait.jpg"
                   alt="Mai Yến Vy"
                   className="w-full h-full object-cover"
                 />

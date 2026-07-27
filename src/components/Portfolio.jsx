@@ -95,41 +95,22 @@ const Portfolio = () => {
     { id: 'design', name: 'Thiết kế', icon: Palette },
   ]
 
-  // Dữ liệu dự án thực tế từ folder "Các sản phẩm đã thực hiện"
+  // Dữ liệu dự án thực tế từ folder "Các sản phẩm đã thực hiện" (selected images)
   const koreanFestivalImages = [
-    'IMG_8307.jpg', 'IMG_8311.jpg', 'IMG_8325.jpg', 'IMG_8354.jpg', 'IMG_8364.jpg',
-    'IMG_8365.jpg', 'IMG_8378.jpg', 'IMG_8392.jpg', 'IMG_8414.jpg', 'IMG_8452.jpg',
-    'IMG_8484.jpg', 'IMG_8505.jpg', 'IMG_8526.jpg', 'IMG_8534.jpg', 'IMG_8542.jpg',
-    'IMG_8545.jpg', 'IMG_8546.jpg', 'IMG_8553.jpg', 'IMG_8555.jpg', 'IMG_8570.jpg',
-    'IMG_8582.jpg', 'IMG_8590.jpg', 'IMG_8591.jpg', 'IMG_8592.jpg', 'IMG_8609.jpg',
-    'IMG_8611.jpg', 'IMG_8617.jpg', 'IMG_8618-Recovered.jpg', 'IMG_8623.jpg', 'IMG_8624.jpg',
-    'IMG_8637.jpg', 'IMG_8648.jpg', 'IMG_8697.jpg', 'IMG_8699.jpg', 'IMG_8702.jpg',
-    'IMG_8704.jpg', 'IMG_8743.jpg', 'bbbbbbbbbbbbbbbbbbb.jpg', 'ẢNH LỌC.jpg'
+    'IMG_8307.jpg', 'IMG_8354.jpg', 'IMG_8414.jpg', 'IMG_8555.jpg', 'IMG_8637.jpg', 'IMG_8699.jpg'
   ]
 
   const volunteerImages = [
     '678550890_1403714191798576_5103472426435505945_n.jpg',
-    '678839176_1403714171798578_1172004511307445459_n.jpg',
     '679071998_1403713455131983_6500414724288222981_n.jpg',
     '680156365_1403710065132322_1537551453669781584_n.jpg',
-    '680425613_1403713098465352_6333590024917309452_n.jpg',
-    '681352870_1403714485131880_2057114640019278616_n.jpg',
-    '681681490_1403710035132325_187267589714582004_n.jpg',
     'DSC_3705 (1).JPG',
-    'DSC_3719 (1).JPG'
+    'IMG_0208.JPG',
+    'IMG_0251.JPG'
   ]
 
   const btsImages = [
-    'IMG_6323.JPG', 'IMG_6345.JPG', 'IMG_6346.JPG', 'IMG_6354.JPG', 'IMG_6359.JPG',
-    'IMG_6361.JPG', 'IMG_6362.JPG', 'IMG_6363.JPG', 'IMG_6364.JPG', 'IMG_6372.JPG',
-    'IMG_6381.JPG', 'IMG_6385.JPG', 'IMG_6387.JPG', 'IMG_6388.JPG', 'IMG_6402.JPG',
-    'IMG_6411.JPG', 'IMG_6414.JPG', 'IMG_6417.JPG', 'IMG_6420.JPG', 'IMG_6422.JPG',
-    'IMG_6428.JPG', 'IMG_6429.JPG', 'IMG_6430.JPG', 'IMG_6431.JPG', 'IMG_6432.JPG',
-    'IMG_6433.JPG', 'IMG_6434.JPG', 'IMG_6438.JPG', 'IMG_6439.JPG', 'IMG_6440.JPG',
-    'IMG_6443.JPG', 'IMG_6447.JPG', 'IMG_6449.JPG', 'IMG_6451.JPG', 'IMG_6454.JPG',
-    'IMG_6460.JPG', 'IMG_6462.JPG', 'IMG_6463.JPG', 'IMG_6464.JPG', 'IMG_6466.JPG',
-    'IMG_6471.JPG', 'IMG_6472.JPG', 'IMG_6473.JPG', 'IMG_6478.JPG', 'IMG_6493.JPG',
-    'IMG_6505.JPG', 'IMG_6507.JPG', 'IMG_6508.JPG', 'IMG_6514.JPG'
+    'IMG_6323.JPG', 'IMG_6345.JPG', 'IMG_6362.JPG', 'IMG_6385.JPG', 'IMG_6411.JPG', 'IMG_6447.JPG'
   ]
 
   // Generate project cards for all images
@@ -138,9 +119,9 @@ const Portfolio = () => {
     category: 'media',
     title: `Lễ hội Hàn Quốc ${index + 1}`,
     description: `Ảnh ${index + 1} từ bộ sự kiện Lễ hội văn hóa Hàn Quốc`,
-    thumbnail: `/media/korean-festival/${img}`,
+    thumbnail: `/media-selected/korean-festival/${img}`,
     type: 'gallery',
-    fullImage: `/media/korean-festival/${img}`
+    fullImage: `/media-selected/korean-festival/${img}`
   }))
 
   const volunteerProjects = volunteerImages.map((img, index) => ({
@@ -148,9 +129,9 @@ const Portfolio = () => {
     category: 'media',
     title: `Hoạt động tình nguyện ${index + 1}`,
     description: `Ảnh ${index + 1} từ bộ hoạt động tình nguyện`,
-    thumbnail: `/media/volunteer/${img}`,
+    thumbnail: `/media-selected/volunteer/${img}`,
     type: 'gallery',
-    fullImage: `/media/volunteer/${img}`
+    fullImage: `/media-selected/volunteer/${img}`
   }))
 
   const btsProjects = btsImages.map((img, index) => ({
@@ -158,9 +139,9 @@ const Portfolio = () => {
     category: 'media',
     title: `BTS Sự kiện ${index + 1}`,
     description: `Ảnh ${index + 1} từ bộ BTS hậu trường sự kiện`,
-    thumbnail: `/media/bts/${img}`,
+    thumbnail: `/media-selected/bts/${img}`,
     type: 'gallery',
-    fullImage: `/media/bts/${img}`
+    fullImage: `/media-selected/bts/${img}`
   }))
 
   const projects = [
@@ -170,7 +151,7 @@ const Portfolio = () => {
       category: 'editor',
       title: 'Kịch bản Tập Cuối',
       description: 'Biên tập và kịch bản cho video tập cuối với nội dung sáng tạo',
-      thumbnail: '/media/korean-festival/IMG_8307.jpg',
+      thumbnail: '/media-selected/korean-festival/IMG_8307.jpg',
       type: 'text',
     },
 
@@ -203,7 +184,7 @@ const Portfolio = () => {
       category: 'video',
       title: 'GALA - Phần 2',
       description: 'Video quay dựng cho sự kiện GALA phần 2',
-      thumbnail: '/media/korean-festival/IMG_8365.jpg',
+      thumbnail: '/media-selected/korean-festival/IMG_8354.jpg',
       type: 'video',
       videoUrl: '/videos/GALA - PHẦN 2.mp4',
     },
@@ -212,7 +193,7 @@ const Portfolio = () => {
       category: 'video',
       title: 'Lâm Kịch Tập Cuối',
       description: 'Video biên tập kịch bản tập cuối',
-      thumbnail: '/media/korean-festival/IMG_8392.jpg',
+      thumbnail: '/media-selected/korean-festival/IMG_8414.jpg',
       type: 'video',
       videoUrl: '/videos/LAMKICH_TAP CUOI_0406.mov',
     },
