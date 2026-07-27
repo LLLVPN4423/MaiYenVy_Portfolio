@@ -39,8 +39,13 @@ jobs:
 
       - name: Copy media files to dist
         run: |
-          mkdir -p dist/media-selected
-          cp -r public/media-selected/* dist/media-selected/
+          mkdir -p dist/media-selected/bts
+          mkdir -p dist/media-selected/korean-festival
+          mkdir -p dist/media-selected/volunteer
+          cp -r public/media-selected/bts/* dist/media-selected/bts/ || true
+          cp -r public/media-selected/korean-festival/* dist/media-selected/korean-festival/ || true
+          cp -r public/media-selected/volunteer/* dist/media-selected/volunteer/ || true
+          cp public/media-selected/portrait.jpg dist/media-selected/ || true
 
       - name: Setup Pages
         uses: actions/configure-pages@v4
