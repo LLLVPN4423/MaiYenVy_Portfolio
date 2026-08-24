@@ -8,6 +8,7 @@ const Navbar = () => {
   const navItems = [
     { name: 'Trang chủ', href: '#home' },
     { name: 'Giới thiệu', href: '#about' },
+    { name: 'Kinh nghiệm', href: '#experience' },
     { name: 'Dự án', href: '#portfolio' },
     { name: 'Liên hệ', href: '#contact' },
   ]

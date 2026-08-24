@@ -3,6 +3,7 @@ import Navbar from './components/Navbar'
 
 const Hero = lazy(() => import('./components/Hero'))
 const About = lazy(() => import('./components/About'))
+const Experience = lazy(() => import('./components/Experience'))
 const Portfolio = lazy(() => import('./components/Portfolio'))
 const Contact = lazy(() => import('./components/Contact'))
 
@@ -23,6 +24,9 @@ function App() {
       </Suspense>
       <Suspense fallback={<LoadingFallback />}>
         <About />
+      </Suspense>
+      <Suspense fallback={<LoadingFallback />}>
+        <Experience />
       </Suspense>
       <Suspense fallback={<LoadingFallback />}>
         <Portfolio />
