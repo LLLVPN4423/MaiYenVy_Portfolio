@@ -1,12 +1,18 @@
 import React from 'react'
-import { motion } from 'framer-motion'
-import { Sparkles, Code, Users, Target, Mail, MapPin } from 'lucide-react'
+import { motion, useReducedMotion } from 'framer-motion'
+import { Users, MessageCircle, Zap, Mail, MapPin, BookOpen } from 'lucide-react'
+import {
+  RoyalSectionHeading, StorybookPage, RoyalPanel, AntiquePhotoFrame,
+  CardOrnament, SparkleField, NightBackdrop, DriftingPetals,
+} from './decor/Ornaments'
 
 const About = () => {
+  const reduceMotion = useReducedMotion()
+
   const softSkills = [
     { name: 'Làm việc nhóm', icon: Users },
-    { name: 'Giao tiếp hiệu quả', icon: Sparkles },
-    { name: 'Chịu áp lực cao', icon: Target },
+    { name: 'Giao tiếp hiệu quả', icon: MessageCircle },
+    { name: 'Chịu áp lực cao', icon: Zap },
   ]
 
   const technicalSkills = [
@@ -18,142 +24,149 @@ const About = () => {
     { name: 'Content đa kênh', level: 90 },
   ]
 
-  return (
-    <section id="about" className="py-20 bg-white">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        {/* Section Title */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          className="text-center mb-16"
-        >
-          <h2 className="text-4xl sm:text-5xl font-bold mb-4 text-sea-blue-dark font-serif">
-            Giới thiệu
-          </h2>
-          <div className="w-24 h-1 bg-gradient-to-r from-sea-blue-primary to-sea-blue-dark mx-auto rounded-full" />
-        </motion.div>
+  const reveal = {
+    hidden: { opacity: 0, y: 26 },
+    show: (d = 0) => ({
+      opacity: 1,
+      y: 0,
+      transition: { duration: 0.8, delay: d, ease: 'easeOut' },
+    }),
+  }
 
-        {/* Main Content Grid */}
-        <div className="grid lg:grid-cols-2 gap-12 items-start">
-          {/* Left Column - Portrait Photo */}
+  return (
+    <section id="about" className="relative py-24 bg-midnight overflow-hidden">
+      <NightBackdrop castle glass>
+        <DriftingPetals count={2} className="opacity-25" />
+      </NightBackdrop>
+
+      <div className="relative max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+        <RoyalSectionHeading eyebrow="chương một" title="Một trang trong cuốn sách" />
+
+        <div className="grid lg:grid-cols-2 gap-14 items-start">
+          {/* Left — portrait + quick contact */}
           <motion.div
-            initial={{ opacity: 0, x: -30 }}
-            whileInView={{ opacity: 1, x: 0 }}
-            viewport={{ once: true }}
+            variants={reveal}
+            initial={reduceMotion ? false : 'hidden'}
+            whileInView="show"
+            viewport={{ once: true, margin: '-60px' }}
+            custom={0.05}
             className="space-y-8"
           >
-            {/* Portrait Photo */}
-            <div className="relative">
-              <div className="aspect-[3/4] bg-soft-beige-dark rounded-2xl overflow-hidden shadow-xl border-2 border-sea-blue-primary/20">
+            <AntiquePhotoFrame className="mx-auto max-w-sm shadow-royal-lg">
+              <div className="aspect-[3/4] overflow-hidden rounded-[0.15rem]">
                 <img
-                  src="https://raw.githubusercontent.com/LLLVPN4423/MaiYenVy_Portfolio/main/public/portrait.jpg"
+                  src={`${import.meta.env.BASE_URL}portrait.jpg`}
                   alt="Mai Yến Vy"
                   className="w-full h-full object-cover"
                 />
               </div>
-              {/* Decorative elements */}
-              <div className="absolute -bottom-4 -right-4 w-32 h-32 bg-sea-blue-primary/10 rounded-full -z-10" />
-              <div className="absolute -top-4 -left-4 w-24 h-24 bg-sea-blue-light/20 rounded-full -z-10" />
-            </div>
+            </AntiquePhotoFrame>
 
-            {/* Quick Info */}
-            <div className="bg-soft-beige rounded-xl p-6 space-y-4">
-              <div className="flex items-center gap-3">
-                <Mail className="text-sea-blue-primary" size={20} />
-                <span className="text-sea-blue-dark">vymai7336@gmail.com</span>
+            <RoyalPanel surface="night" icon={Mail} title="Liên hệ nhanh" className="mx-auto max-w-sm">
+              <div className="px-6 py-5 sm:px-8 space-y-4">
+                <a href="mailto:vymai7336@gmail.com" className="flex items-center gap-3 group">
+                  <Mail size={16} className="text-champagne flex-shrink-0" strokeWidth={1.5} />
+                  <span className="text-night/85 text-sm group-hover:text-champagne transition-colors break-all">
+                    vymai7336@gmail.com
+                  </span>
+                </a>
+                <div className="flex items-start gap-3">
+                  <MapPin size={16} className="text-champagne mt-0.5 flex-shrink-0" strokeWidth={1.5} />
+                  <span className="text-night/75 text-sm leading-relaxed">
+                    62/37 Ngô Gia Tự, An Bình, Dĩ An, Bình Dương
+                  </span>
+                </div>
               </div>
-              <div className="flex items-center gap-3">
-                <MapPin className="text-sea-blue-primary" size={20} />
-                <span className="text-sea-blue-dark text-sm">62/37 Ngô Gia Tự, An Bình, Dĩ An, Bình Dương</span>
-              </div>
-            </div>
+            </RoyalPanel>
           </motion.div>
 
-          {/* Right Column - Who Am I & Skills */}
+          {/* Right — storybook page panels */}
           <motion.div
-            initial={{ opacity: 0, x: 30 }}
-            whileInView={{ opacity: 1, x: 0 }}
-            viewport={{ once: true }}
-            className="space-y-8"
+            variants={reveal}
+            initial={reduceMotion ? false : 'hidden'}
+            whileInView="show"
+            viewport={{ once: true, margin: '-60px' }}
+            custom={0.15}
+            className="space-y-10"
           >
-            {/* Who Am I Section */}
-            <div className="bg-soft-beige rounded-2xl p-8 shadow-sm">
-              <h3 className="text-2xl font-bold text-sea-blue-dark mb-4 font-serif">Who Am I</h3>
-              <div className="prose prose-lg text-sea-blue-dark">
-                <p className="mb-4 leading-relaxed">
-                  Là sinh viên ngành Văn hóa học với niềm đam mê sâu sắc dành cho văn hóa ẩm thực và bếp. 
-                  Am hiểu về sự tinh tế trong việc kết hợp nguyên liệu, mong muốn ứng dụng am hiểu văn hóa 
-                  và sự tỉ mỉ để học hỏi, phát triển kỹ năng làm bếp trong môi trường F&B chuyên nghiệp.
-                </p>
-                <p className="mb-4 leading-relaxed">
-                  Chịu áp lực cao, nhanh nhẹn, có khả năng làm việc nhóm tốt. 
-                  Đang theo học song song ngành Báo chí tại ĐH KHXH&NV - ĐHQG HCM với GPA 8.45/10.0 
-                  và ngành Văn hóa học với GPA 8.36/10.0.
-                </p>
-                <p className="leading-relaxed italic text-sea-blue-primary">
-                  Triết lý làm việc: "Tỉ mỉ trong từng chi tiết, đam mê trong từng công việc"
-                </p>
+            {/* Biography — the storybook page */}
+            <StorybookPage className="relative overflow-hidden">
+              <SparkleField count={6} className="opacity-30" tone="#A98242" />
+              <div className="relative px-6 py-7 sm:px-10 sm:py-9">
+                <div className="flex items-center gap-4 mb-6">
+                  <span className="p-2.5 rounded-full bg-pink/25 border border-gold/50 text-bronze shadow-inner">
+                    <BookOpen size={18} strokeWidth={1.5} />
+                  </span>
+                  <h3 className="font-display text-3xl font-semibold text-ink">
+                    Câu chuyện của tôi
+                  </h3>
+                </div>
+                <div className="space-y-5 text-ink/85 leading-[1.9]">
+                  <p className="first-letter:font-display first-letter:text-6xl first-letter:text-bronze first-letter:float-left first-letter:mr-3 first-letter:leading-[0.85]">
+                    Là sinh viên ngành Văn hóa học với niềm đam mê sâu sắc dành cho văn hóa ẩm thực
+                    và bếp. Am hiểu về sự tinh tế trong việc kết hợp nguyên liệu, mong muốn ứng dụng
+                    am hiểu văn hóa và sự tỉ mỉ để học hỏi, phát triển kỹ năng làm bếp trong môi
+                    trường F&amp;B chuyên nghiệp.
+                  </p>
+                  <p>
+                    Chịu áp lực cao, nhanh nhẹn, có khả năng làm việc nhóm tốt. Đang theo học song
+                    song ngành Báo chí tại ĐH KHXH&amp;NV - ĐHQG HCM với GPA 8.45/10.0 và ngành Văn
+                    hóa học với GPA 8.36/10.0.
+                  </p>
+                  <CardOrnament className="!my-2" />
+                  <p className="font-display italic text-xl text-bronze/90">
+                    "Tỉ mỉ trong từng chi tiết, đam mê trong từng công việc"
+                  </p>
+                </div>
               </div>
-            </div>
+            </StorybookPage>
 
-            {/* Skills Grid */}
-            <div className="grid md:grid-cols-2 gap-6">
-              {/* Soft Skills */}
-              <div className="bg-white rounded-xl p-6 shadow-sm border border-sea-blue-primary/10">
-                <h4 className="text-lg font-bold text-sea-blue-dark mb-4 font-serif">Kỹ năng mềm</h4>
-                <div className="space-y-3">
+            {/* Skills — parchment panels */}
+            <div className="grid sm:grid-cols-2 gap-8">
+              <RoyalPanel title="Kỹ năng mềm">
+                <ul className="px-6 py-6 sm:px-7 space-y-4">
                   {softSkills.map((skill, index) => {
                     const Icon = skill.icon
                     return (
-                      <motion.div
+                      <motion.li
                         key={skill.name}
-                        initial={{ opacity: 0, y: 10 }}
-                        whileInView={{ opacity: 1, y: 0 }}
+                        initial={reduceMotion ? false : { opacity: 0, x: -14 }}
+                        whileInView={{ opacity: 1, x: 0 }}
                         viewport={{ once: true }}
-                        transition={{ delay: index * 0.1 }}
+                        transition={{ delay: index * 0.12, duration: 0.5 }}
                         className="flex items-center gap-3"
                       >
-                        <div className="p-2 bg-sea-blue-primary/10 rounded-lg">
-                          <Icon size={16} className="text-sea-blue-primary" />
-                        </div>
-                        <span className="text-sea-blue-dark font-medium text-sm">{skill.name}</span>
-                      </motion.div>
+                        <span className="p-2 rounded-full bg-pink/25 border border-gold/50 text-bronze shadow-inner flex-shrink-0">
+                          <Icon size={14} strokeWidth={1.5} />
+                        </span>
+                        <span className="text-ink/85 text-sm font-medium">{skill.name}</span>
+                      </motion.li>
                     )
                   })}
-                </div>
-              </div>
+                </ul>
+              </RoyalPanel>
 
-              {/* Technical Skills */}
-              <div className="bg-white rounded-xl p-6 shadow-sm border border-sea-blue-primary/10">
-                <h4 className="text-lg font-bold text-sea-blue-dark mb-4 font-serif">Kỹ năng chuyên môn</h4>
-                <div className="space-y-3">
+              <RoyalPanel title="Kỹ năng chuyên môn">
+                <div className="px-6 py-6 sm:px-7 space-y-5">
                   {technicalSkills.map((skill, index) => (
-                    <motion.div
-                      key={skill.name}
-                      initial={{ opacity: 0, y: 10 }}
-                      whileInView={{ opacity: 1, y: 0 }}
-                      viewport={{ once: true }}
-                      transition={{ delay: index * 0.1 }}
-                      className="space-y-1"
-                    >
-                      <div className="flex justify-between text-sea-blue-dark text-sm">
-                        <span className="font-medium">{skill.name}</span>
-                        <span className="text-sea-blue-primary">{skill.level}%</span>
+                    <div key={skill.name}>
+                      <div className="flex justify-between items-baseline mb-1.5">
+                        <span className="text-ink/85 text-sm font-medium">{skill.name}</span>
+                        <span className="text-bronze text-xs tracking-wide">{skill.level}%</span>
                       </div>
-                      <div className="h-1.5 bg-soft-beige-dark rounded-full overflow-hidden">
+                      <div className="h-1.5 bg-cream-dark rounded-full overflow-hidden border border-gold/40">
                         <motion.div
-                          initial={{ width: 0 }}
+                          initial={reduceMotion ? false : { width: 0 }}
                           whileInView={{ width: `${skill.level}%` }}
                           viewport={{ once: true }}
-                          transition={{ duration: 1, delay: index * 0.1 }}
-                          className="h-full bg-gradient-to-r from-sea-blue-primary to-sea-blue-dark rounded-full"
+                          transition={{ duration: 1.1, delay: index * 0.08, ease: 'easeOut' }}
+                          className="h-full bg-gradient-to-r from-gold via-gold-dark to-bronze rounded-full"
                         />
                       </div>
-                    </motion.div>
+                    </div>
                   ))}
                 </div>
-              </div>
+              </RoyalPanel>
             </div>
           </motion.div>
         </div>

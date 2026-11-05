@@ -4,34 +4,264 @@
 
 @layer base {
   body {
-    @apply bg-soft-beige text-sea-blue-dark;
-    font-family: 'Inter', system-ui, sans-serif;
+    @apply bg-midnight text-night font-sans antialiased;
+    font-family: 'Source Sans 3', system-ui, sans-serif;
+    font-feature-settings: 'kern' 1, 'liga' 1;
   }
-  
+
   h1, h2, h3, h4, h5, h6 {
-    font-family: 'Playfair Display', serif;
+    font-family: 'EB Garamond', Georgia, serif;
+    font-feature-settings: 'kern' 1, 'liga' 1, 'onum' 1;
+  }
+
+  ::selection {
+    @apply bg-pink/35 text-ivory;
   }
 }
 
-/* Smooth scrolling */
 html {
   scroll-behavior: smooth;
 }
 
-/* Custom scrollbar */
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
 ::-webkit-scrollbar {
   width: 8px;
 }
-
 ::-webkit-scrollbar-track {
-  background: #F5EFED;
+  background: #0A0B14;
 }
-
 ::-webkit-scrollbar-thumb {
-  background: #457B9D;
-  border-radius: 4px;
+  background: linear-gradient(180deg, #D4B87A, #C48A9E);
+  border-radius: 999px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #E8D4A8;
 }
 
-::-webkit-scrollbar-thumb:hover {
-  background: #1D3557;
+/* ===================== PAPER & NIGHT MATERIALS ===================== */
+
+.paper-grain {
+  background-image:
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='140' height='140' filter='url(%23n)' opacity='0.035'/%3E%3C/svg%3E"),
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='f'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.015 0.55' numOctaves='2'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='200' height='200' filter='url(%23f)' opacity='0.035'/%3E%3C/svg%3E");
+}
+
+/* Soft princess parchment — pearl cream, gentle blush wash, minimal foxing */
+.parchment {
+  background-color: #F7F0E4;
+  background-image:
+    radial-gradient(120% 90% at 50% 0%, rgba(255,252,248,0.85), transparent 62%),
+    radial-gradient(90% 70% at 90% 85%, rgba(224,168,186,0.10), transparent 55%),
+    radial-gradient(70% 60% at 8% 78%, rgba(186,170,208,0.08), transparent 50%),
+    radial-gradient(50% 40% at 70% 28%, rgba(212,184,122,0.07), transparent 70%),
+    radial-gradient(2px 2px at 18% 34%, rgba(160,120,90,0.06), transparent 100%),
+    radial-gradient(1.5px 1.5px at 78% 18%, rgba(160,120,90,0.05), transparent 100%);
+}
+
+.engraved {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='8' height='8'%3E%3Cpath d='M0 8 L8 0 M-2 2 L2 -2 M6 10 L10 6' stroke='%23D4B87A' stroke-width='0.5' opacity='0.10'/%3E%3C/svg%3E");
+}
+
+.paper-edge {
+  box-shadow:
+    inset 0 1px 0 rgba(255,252,248,0.65),
+    inset 0 0 0 1px rgba(212,184,122,0.16),
+    inset 0 -12px 28px rgba(196,138,158,0.05),
+    inset 0 0 36px rgba(120,90,70,0.07);
+}
+
+/*
+ * Royal antique gilt frame — rectangular gallery moulding
+ * Inspired by nested frame+mat (ThinkUX) + vintage gold picture frames.
+ * Keep class name `soft-frame` for compatibility; look is now royal, not pill-soft.
+ */
+.soft-frame,
+.royal-frame {
+  border-radius: 0.3rem;
+  /* Slim moulding — default padding kept tiny when used with p-1 */
+  background:
+    linear-gradient(160deg, #F0E6C8 0%, #E8D4A8 22%, #D4B87A 48%, #B89A5E 72%, #8F6B33 100%);
+  box-shadow:
+    0 12px 32px rgba(0, 0, 0, 0.45),
+    0 0 0 1px rgba(90, 60, 25, 0.4),
+    inset 0 1px 0 rgba(255, 248, 230, 0.5),
+    inset 0 -1px 0 rgba(80, 50, 20, 0.3);
+}
+
+/* Inner engraved rail for royal frames — slim */
+.royal-rail {
+  box-shadow:
+    inset 0 0 0 1px rgba(232, 212, 168, 0.4),
+    inset 0 0 0 2px rgba(110, 80, 35, 0.3);
+}
+
+/* Soft organic photo silhouette (rarely used) */
+.soft-oval {
+  border-radius: 42% 42% 38% 38% / 28% 28% 48% 48%;
+}
+
+/* Seamless chapter blend — soft veil instead of a hard seam */
+.chapter-blend {
+  background: linear-gradient(
+    180deg,
+    transparent 0%,
+    rgba(10, 11, 20, 0.35) 35%,
+    rgba(10, 11, 20, 0.45) 50%,
+    rgba(10, 11, 20, 0.35) 65%,
+    transparent 100%
+  );
+}
+
+/*
+ * Dreamy palace-garden night — soft moonlight, hedge mist, cool greens.
+ * Cheap CSS only (no backdrop-filter — that was a major lag source).
+ */
+.night-sky {
+  background:
+    radial-gradient(90% 70% at 70% 8%, rgba(226, 202, 145, 0.12) 0%, transparent 55%),
+    radial-gradient(70% 55% at 18% 30%, rgba(120, 150, 130, 0.10) 0%, transparent 60%),
+    radial-gradient(80% 50% at 85% 75%, rgba(90, 110, 150, 0.12) 0%, transparent 55%),
+    radial-gradient(100% 40% at 50% 100%, rgba(40, 70, 50, 0.28) 0%, transparent 70%),
+    linear-gradient(180deg, #0C101C 0%, #0A0E16 42%, #08110F 100%);
+}
+
+.garden-mist {
+  background:
+    radial-gradient(ellipse 70% 45% at 30% 85%, rgba(90, 130, 100, 0.18) 0%, transparent 70%),
+    radial-gradient(ellipse 60% 40% at 75% 90%, rgba(70, 100, 90, 0.14) 0%, transparent 65%),
+    linear-gradient(to top, rgba(8, 16, 14, 0.55) 0%, transparent 55%);
+}
+
+/* Static glass veil — no backdrop-filter / no continuous sheen animation */
+.glass-pane {
+  background:
+    linear-gradient(
+      125deg,
+      rgba(255, 255, 255, 0.055) 0%,
+      transparent 42%,
+      rgba(200, 220, 255, 0.02) 70%,
+      rgba(255, 255, 255, 0.03) 100%
+    ),
+    linear-gradient(
+      180deg,
+      rgba(12, 16, 28, 0.22) 0%,
+      transparent 28%,
+      transparent 72%,
+      rgba(8, 14, 16, 0.28) 100%
+    );
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.07);
+  contain: strict;
+}
+
+/* Shared ambient firefly layer — GPU-friendly */
+.ambient-fireflies {
+  position: fixed;
+  inset: 0;
+  z-index: 1;
+  pointer-events: none;
+  overflow: hidden;
+  contain: strict;
+}
+
+@keyframes vine-sway {
+  0%, 100% { transform: rotate(-0.6deg); }
+  50% { transform: rotate(0.6deg); }
+}
+.animate-vine-sway {
+  animation: vine-sway 6s ease-in-out infinite;
+  transform-origin: bottom center;
+}
+
+.starfield {
+  background-image:
+    radial-gradient(1px 1px at 12% 22%, rgba(255,248,230,0.95), transparent 100%),
+    radial-gradient(1.5px 1.5px at 32% 68%, rgba(255,255,255,0.7), transparent 100%),
+    radial-gradient(1px 1px at 55% 15%, rgba(232,212,168,0.85), transparent 100%),
+    radial-gradient(1px 1px at 71% 42%, rgba(255,255,255,0.55), transparent 100%),
+    radial-gradient(1.5px 1.5px at 84% 76%, rgba(232,212,168,0.8), transparent 100%),
+    radial-gradient(1px 1px at 44% 88%, rgba(255,255,255,0.5), transparent 100%),
+    radial-gradient(1px 1px at 8% 55%, rgba(232,212,168,0.65), transparent 100%),
+    radial-gradient(1.2px 1.2px at 63% 30%, rgba(255,248,230,0.7), transparent 100%),
+    radial-gradient(1px 1px at 90% 18%, rgba(255,255,255,0.6), transparent 100%),
+    radial-gradient(1px 1px at 25% 45%, rgba(232,212,168,0.55), transparent 100%),
+    radial-gradient(1px 1px at 48% 8%, rgba(255,255,255,0.45), transparent 100%),
+    radial-gradient(1.3px 1.3px at 78% 58%, rgba(232,212,168,0.6), transparent 100%),
+    radial-gradient(1px 1px at 18% 78%, rgba(255,255,255,0.4), transparent 100%),
+    radial-gradient(1px 1px at 95% 35%, rgba(232,212,168,0.5), transparent 100%);
+}
+
+/* ===================== ROYAL / PRINCESS MOTION ===================== */
+
+@keyframes float-soft {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-10px); }
+}
+.animate-float-soft {
+  animation: float-soft 7s ease-in-out infinite;
+}
+
+@keyframes twinkle {
+  0%, 100% { opacity: 0.12; transform: scale(0.8); }
+  50% { opacity: 0.8; transform: scale(1.2); }
+}
+.animate-twinkle {
+  animation: twinkle 4s ease-in-out infinite;
+}
+
+/* Single-keyframe firefly — transform + opacity only (no filter / nested glow) */
+@keyframes firefly-drift {
+  0%   { transform: translate3d(0, 0, 0) scale(0.75); opacity: 0; }
+  15%  { opacity: 0.95; }
+  50%  { transform: translate3d(12px, -40px, 0) scale(1); opacity: 0.55; }
+  85%  { opacity: 0.9; }
+  100% { transform: translate3d(-8px, -88px, 0) scale(0.7); opacity: 0; }
+}
+.animate-firefly {
+  animation: firefly-drift linear infinite;
+  will-change: transform, opacity;
+  backface-visibility: hidden;
+}
+
+@keyframes petal-fall {
+  0%   { transform: translateY(-8vh) rotate(0deg); opacity: 0; }
+  12%  { opacity: 0.75; }
+  88%  { opacity: 0.55; }
+  100% { transform: translateY(108vh) rotate(340deg); opacity: 0; }
+}
+.animate-petal {
+  animation: petal-fall linear infinite;
+}
+
+@keyframes gold-shimmer {
+  0% { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+}
+.gold-shimmer {
+  background-image: linear-gradient(
+    110deg,
+    rgba(232, 212, 168, 0) 30%,
+    rgba(232, 212, 168, 0.45) 50%,
+    rgba(224, 168, 186, 0) 70%
+  );
+  background-size: 200% 100%;
+  animation: gold-shimmer 5s linear infinite;
+}
+
+/* Soft ambient blush glow behind panels */
+.blush-glow {
+  box-shadow:
+    0 20px 55px rgba(40, 20, 50, 0.35),
+    0 0 48px rgba(224, 168, 186, 0.1);
 }

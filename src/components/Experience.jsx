@@ -1,8 +1,13 @@
 import React from 'react'
-import { motion } from 'framer-motion'
-import { Briefcase, Calendar, MapPin } from 'lucide-react'
+import { motion, useReducedMotion } from 'framer-motion'
+import {
+  RoyalSectionHeading, RoyalPanel, RoyalBadge, SparkleField,
+  NightBackdrop, EnchantedBeanstalk,
+} from './decor/Ornaments'
 
 const Experience = () => {
+  const reduceMotion = useReducedMotion()
+
   const experiences = [
     {
       company: 'Trung tâm Ngoại ngữ Anh Trung (Elle Learning)',
@@ -62,74 +67,85 @@ const Experience = () => {
   ]
 
   return (
-    <section id="experience" className="py-20 bg-white">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        {/* Section Title */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          className="text-center mb-16"
-        >
-          <h2 className="text-4xl sm:text-5xl font-bold mb-4 text-sea-blue-dark font-serif">
-            Kinh nghiệm
-          </h2>
-          <div className="w-24 h-1 bg-gradient-to-r from-sea-blue-primary to-sea-blue-dark mx-auto rounded-full" />
-        </motion.div>
+    <section id="experience" className="relative py-24 bg-midnight overflow-hidden">
+      <NightBackdrop castle glass />
 
-        {/* Timeline */}
-        <div className="max-w-4xl mx-auto">
-          {experiences.map((exp, index) => (
-            <motion.div
-              key={index}
-              initial={{ opacity: 0, x: index % 2 === 0 ? -30 : 30 }}
-              whileInView={{ opacity: 1, x: 0 }}
-              viewport={{ once: true }}
-              transition={{ delay: index * 0.1 }}
-              className="relative pl-8 pb-12 last:pb-0"
-            >
-              {/* Timeline line */}
-              <div className="absolute left-0 top-0 bottom-0 w-0.5 bg-sea-blue-primary/20" />
-              
-              {/* Timeline dot */}
-              <div className="absolute left-[-5px] top-0 w-2.5 h-2.5 bg-sea-blue-primary rounded-full border-2 border-white shadow-md" />
+      <div className="relative max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
+        <RoyalSectionHeading
+          eyebrow="chương hai"
+          title="Kinh nghiệm"
+          subtitle="Leo theo cây đậu thần — mỗi nấc là một chương đã sống"
+        />
 
-              {/* Content */}
-              <div className="bg-soft-beige rounded-2xl p-6 shadow-sm border border-sea-blue-primary/10 hover:border-sea-blue-primary/30 transition-colors">
-                {/* Header */}
-                <div className="flex flex-wrap items-start justify-between gap-4 mb-4">
-                  <div className="flex-1">
-                    <h3 className="text-xl font-bold text-sea-blue-dark font-serif mb-1">
-                      {exp.company}
-                    </h3>
-                    {exp.organization && (
-                      <p className="text-sm text-sea-blue-primary/70 mb-2">
-                        {exp.organization}
-                      </p>
-                    )}
-                    <div className="flex items-center gap-2 text-sea-blue-primary font-medium">
-                      <Briefcase size={16} />
-                      <span>{exp.role}</span>
+        <div className="relative">
+          {/* Enchanted beanstalk spine — Jack & the Beanstalk */}
+          <div
+            className={`absolute left-[2px] sm:left-1/2 top-2 bottom-2 w-16 sm:w-20 -translate-x-1/2 z-0 ${
+              reduceMotion ? '' : 'animate-vine-sway'
+            }`}
+            aria-hidden="true"
+          >
+            <EnchantedBeanstalk
+              nodes={experiences.length}
+              className="h-full w-full drop-shadow-[0_0_12px_rgba(139,196,122,0.25)]"
+            />
+          </div>
+
+          <div className="relative z-[1] space-y-12">
+            {experiences.map((exp, index) => {
+              const leftSide = index % 2 === 0
+              return (
+                <motion.div
+                  key={index}
+                  initial={reduceMotion ? false : { opacity: 0, y: 30 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true, margin: '-60px' }}
+                  transition={{ duration: 0.7, delay: index * 0.05 }}
+                  className={`relative pl-12 sm:pl-0 sm:w-[calc(50%-2.75rem)] ${
+                    leftSide ? 'sm:mr-auto' : 'sm:ml-auto'
+                  }`}
+                >
+                  {/* Golden bean node on the stalk */}
+                  <span
+                    className={`absolute top-9 left-[1px] sm:left-auto flex h-5 w-5 items-center justify-center ${
+                      leftSide ? 'sm:-right-[2.65rem]' : 'sm:-left-[2.65rem]'
+                    }`}
+                    aria-hidden="true"
+                  >
+                    <span className="absolute inset-0 rounded-full bg-champagne/30 blur-[6px]" />
+                    <span className="relative h-3.5 w-4 rounded-full border border-champagne/70 bg-gradient-to-br from-champagne via-gold to-gold-dark shadow-[0_0_0_3px_rgba(10,11,20,0.85),0_0_14px_rgba(232,212,168,0.55)]" />
+                  </span>
+
+                  <div className={`mb-3 ${leftSide ? 'sm:text-right' : ''}`}>
+                    <RoyalBadge night>{exp.period}</RoyalBadge>
+                  </div>
+
+                  <RoyalPanel className="hover:shadow-princess-lg transition-shadow duration-500">
+                    <div className="relative px-6 py-6 sm:px-7 overflow-hidden">
+                      <SparkleField count={4} className="opacity-25" tone="#A98242" />
+                      <h3 className="font-display text-xl font-semibold text-ink leading-snug mb-1">
+                        {exp.company}
+                      </h3>
+                      {exp.organization && (
+                        <p className="text-bronze/75 text-xs tracking-wide mb-2">{exp.organization}</p>
+                      )}
+                      <p className="font-script text-lg text-rose mb-4">{exp.role}</p>
+                      <ul className="space-y-2.5">
+                        {exp.description.map((item, itemIndex) => (
+                          <li key={itemIndex} className="flex items-start gap-2.5 text-ink/80 text-sm leading-relaxed">
+                            <svg width="8" height="8" viewBox="0 0 8 8" className="mt-[6px] flex-shrink-0" aria-hidden="true">
+                              <ellipse cx="4" cy="4" rx="3" ry="2.4" fill="#C6A15B" opacity="0.85" />
+                            </svg>
+                            <span>{item}</span>
+                          </li>
+                        ))}
+                      </ul>
                     </div>
-                  </div>
-                  <div className="flex items-center gap-2 text-sea-blue-dark/70 text-sm">
-                    <Calendar size={16} />
-                    <span>{exp.period}</span>
-                  </div>
-                </div>
-
-                {/* Description */}
-                <ul className="space-y-2">
-                  {exp.description.map((item, itemIndex) => (
-                    <li key={itemIndex} className="flex items-start gap-2 text-sea-blue-dark/80 text-sm">
-                      <span className="w-1.5 h-1.5 bg-sea-blue-primary rounded-full mt-2 flex-shrink-0" />
-                      <span>{item}</span>
-                    </li>
-                  ))}
-                </ul>
-              </div>
-            </motion.div>
-          ))}
+                  </RoyalPanel>
+                </motion.div>
+              )
+            })}
+          </div>
         </div>
       </div>
     </section>

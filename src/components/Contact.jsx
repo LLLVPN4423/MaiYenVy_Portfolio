@@ -1,122 +1,113 @@
 import React from 'react'
-import { motion } from 'framer-motion'
-import { Mail, Facebook, Instagram, Linkedin, Globe, Send } from 'lucide-react'
+import { motion, useReducedMotion } from 'framer-motion'
+import { Mail, Phone, MapPin, Send, Feather } from 'lucide-react'
+import { RoyalSectionHeading, RoyalLetter, RoyalButton, CardOrnament, SparkleField, NightBackdrop } from './decor/Ornaments'
 
 const Contact = () => {
-  // Cấu hình thông tin liên hệ - Thay đổi theo nhu cầu
+  const reduceMotion = useReducedMotion()
+
+  // Verified contact channels only — no placeholder social URLs.
+  // Add real profile links here once the owner provides them.
   const config = {
     email: 'vymai7336@gmail.com',
     phone: '(+84) 766 976 223',
+    phoneHref: 'tel:+84766976223',
     address: '62/37 Ngô Gia Tự, An Bình, Dĩ An, Bình Dương',
-    socialLinks: {
-      facebook: 'https://facebook.com/yourprofile', // Thay link thực tế
-      instagram: 'https://instagram.com/yourprofile', // Thay link thực tế
-      linkedin: 'https://linkedin.com/in/yourprofile', // Thay link thực tế
-      behance: 'https://behance.net/yourprofile', // Thay link thực tế
-    },
   }
 
-  const socialIcons = [
-    { name: 'Facebook', icon: Facebook, href: config.socialLinks.facebook, color: 'hover:bg-blue-600' },
-    { name: 'Instagram', icon: Instagram, href: config.socialLinks.instagram, color: 'hover:bg-pink-600' },
-    { name: 'LinkedIn', icon: Linkedin, href: config.socialLinks.linkedin, color: 'hover:bg-blue-700' },
-    { name: 'Portfolio', icon: Globe, href: config.socialLinks.behance, color: 'hover:bg-purple-600' },
-  ]
+  const reveal = {
+    hidden: { opacity: 0, y: 26 },
+    show: (d = 0) => ({
+      opacity: 1,
+      y: 0,
+      transition: { duration: 0.8, delay: d, ease: 'easeOut' },
+    }),
+  }
 
   return (
-    <section id="contact" className="py-20 bg-white">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        {/* Section Title */}
+    <section id="contact" className="relative py-24 bg-midnight overflow-hidden">
+      <NightBackdrop castle glass />
+
+      <div className="relative max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+        <RoyalSectionHeading eyebrow="chương cuối" title="Lời mời hoàng gia" subtitle="Hãy cùng viết tiếp câu chuyện" />
+
         <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          className="text-center mb-16"
+          variants={reveal}
+          initial={reduceMotion ? false : 'hidden'}
+          whileInView="show"
+          viewport={{ once: true, margin: '-60px' }}
+          custom={0.1}
+          className="max-w-2xl mx-auto"
         >
-          <h2 className="text-4xl sm:text-5xl font-bold mb-4 text-sea-blue-dark font-serif">
-            Liên hệ
-          </h2>
-          <div className="w-24 h-1 bg-gradient-to-r from-sea-blue-primary to-sea-blue-dark mx-auto rounded-full" />
+          <RoyalLetter className="shadow-[0_24px_70px_rgba(0,0,0,0.55)]">
+            <div className="relative px-6 py-8 sm:px-12 sm:py-10 overflow-hidden">
+              <SparkleField count={8} className="opacity-30" tone="#A98242" />
+
+              <div className="flex items-center justify-center gap-3 mb-5">
+                <span className="p-2.5 rounded-full bg-pink/25 border border-gold/50 text-bronze shadow-inner">
+                  <Feather size={18} strokeWidth={1.5} />
+                </span>
+                <h3 className="font-display text-2xl font-semibold text-ink">Một lá thư nhỏ</h3>
+              </div>
+
+              <p className="font-script text-4xl sm:text-5xl text-rose mb-4">
+                rất vui được kết nối
+              </p>
+              <p className="text-ink/75 leading-relaxed mb-10 max-w-md mx-auto">
+                Dù là một dự án mới, một câu chuyện cần kể, hay đơn giản là một cuộc trò chuyện —
+                tôi luôn sẵn lòng lắng nghe.
+              </p>
+
+              <div className="grid sm:grid-cols-3 gap-5 text-left">
+                <a
+                  href={`mailto:${config.email}`}
+                  className="group bg-ivory/70 rounded-royal border border-champagne/50 p-5 hover:border-champagne/70 hover:shadow-royal hover:-translate-y-0.5 transition-all duration-300"
+                >
+                  <Mail size={19} className="text-bronze mb-3" strokeWidth={1.5} />
+                  <p className="text-[11px] tracking-widest-story uppercase text-rose/70 mb-1">Email</p>
+                  <p className="text-ink/85 text-sm break-all group-hover:text-bronze transition-colors">
+                    {config.email}
+                  </p>
+                </a>
+
+                <a
+                  href={config.phoneHref}
+                  className="group bg-ivory/70 rounded-royal border border-champagne/50 p-5 hover:border-champagne/70 hover:shadow-royal hover:-translate-y-0.5 transition-all duration-300"
+                >
+                  <Phone size={19} className="text-bronze mb-3" strokeWidth={1.5} />
+                  <p className="text-[11px] tracking-widest-story uppercase text-rose/70 mb-1">Điện thoại</p>
+                  <p className="text-ink/85 text-sm group-hover:text-bronze transition-colors">
+                    {config.phone}
+                  </p>
+                </a>
+
+                <div className="bg-ivory/70 rounded-royal border border-champagne/50 p-5">
+                  <MapPin size={19} className="text-bronze mb-3" strokeWidth={1.5} />
+                  <p className="text-[11px] tracking-widest-story uppercase text-rose/70 mb-1">Địa chỉ</p>
+                  <p className="text-ink/85 text-sm leading-relaxed">{config.address}</p>
+                </div>
+              </div>
+
+              <CardOrnament className="mt-10" />
+            </div>
+          </RoyalLetter>
         </motion.div>
-
-        <div className="grid md:grid-cols-2 gap-12 max-w-5xl mx-auto">
-          {/* Email */}
-          <motion.div
-            initial={{ opacity: 0, x: -30 }}
-            whileInView={{ opacity: 1, x: 0 }}
-            viewport={{ once: true }}
-            className="bg-soft-beige rounded-2xl p-8 shadow-sm border border-sea-blue-primary/10"
-          >
-            <div className="flex items-center gap-4 mb-6">
-              <div className="p-3 bg-sea-blue-primary/10 rounded-xl">
-                <Mail size={24} className="text-sea-blue-primary" />
-              </div>
-              <h3 className="text-2xl font-bold text-sea-blue-dark font-serif">Liên hệ</h3>
-            </div>
-            <div className="space-y-4">
-              <a
-                href={`mailto:${config.email}`}
-                className="block text-sea-blue-dark hover:text-sea-blue-primary transition-colors text-lg"
-              >
-                {config.email}
-              </a>
-              <p className="text-sea-blue-dark text-lg">
-                {config.phone}
-              </p>
-              <p className="text-sea-blue-dark text-sm">
-                {config.address}
-              </p>
-            </div>
-          </motion.div>
-
-          {/* Social Media */}
-          <motion.div
-            initial={{ opacity: 0, x: 30 }}
-            whileInView={{ opacity: 1, x: 0 }}
-            viewport={{ once: true }}
-            className="bg-soft-beige rounded-2xl p-8 shadow-sm border border-sea-blue-primary/10"
-          >
-            <div className="flex items-center gap-4 mb-6">
-              <div className="p-3 bg-sea-blue-primary/10 rounded-xl">
-                <Send size={24} className="text-sea-blue-primary" />
-              </div>
-              <h3 className="text-2xl font-bold text-sea-blue-dark font-serif">Mạng xã hội</h3>
-            </div>
-            <div className="grid grid-cols-2 gap-4">
-              {socialIcons.map((social, index) => {
-                const Icon = social.icon
-                return (
-                  <motion.a
-                    key={social.name}
-                    href={social.href}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    initial={{ opacity: 0, y: 20 }}
-                    whileInView={{ opacity: 1, y: 0 }}
-                    viewport={{ once: true }}
-                    transition={{ delay: index * 0.1 }}
-                    whileHover={{ scale: 1.05 }}
-                    whileTap={{ scale: 0.95 }}
-                    className={`flex items-center gap-3 p-4 bg-white rounded-xl border border-sea-blue-primary/20 hover:border-sea-blue-primary transition-colors shadow-sm`}
-                  >
-                    <Icon size={20} className="text-sea-blue-primary" />
-                    <span className="text-sea-blue-dark font-medium">{social.name}</span>
-                  </motion.a>
-                )
-              })}
-            </div>
-          </motion.div>
-        </div>
 
         {/* CTA */}
         <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
+          variants={reveal}
+          initial={reduceMotion ? false : 'hidden'}
+          whileInView="show"
           viewport={{ once: true }}
-          className="text-center mt-12"
+          custom={0.2}
+          className="mt-12"
         >
-          <p className="text-sea-blue-primary/70 text-lg">
-            Hãy kết nối để cùng nhau tạo ra những dự án ấn tượng!
+          <RoyalButton variant="gold" href={`mailto:${config.email}`} className="!rounded-full group">
+            <Send size={15} className="transition-transform duration-300 group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
+            Gửi lời nhắn
+          </RoyalButton>
+          <p className="mt-5 text-night/50 text-xs tracking-wide">
+            Email sẽ mở ứng dụng thư của bạn — không có biểu mẫu trung gian.
           </p>
         </motion.div>
       </div>

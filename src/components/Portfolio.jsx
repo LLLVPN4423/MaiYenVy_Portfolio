@@ -1,6 +1,10 @@
 import React, { useState, useEffect, useRef, useCallback } from 'react'
-import { motion, AnimatePresence } from 'framer-motion'
-import { Filter, Play, FileText, Image, Video, Palette, X } from 'lucide-react'
+import { motion, AnimatePresence, useReducedMotion } from 'framer-motion'
+import { FileText, Image as ImageIcon, Video, Palette, X, Play } from 'lucide-react'
+import {
+  RoyalSectionHeading, CardOrnament, NightBackdrop,
+  RoyalBadge, RoyalButton, CornerFlourish, BotanicalSprig,
+} from './decor/Ornaments'
 
 const useIntersectionObserver = (options = {}) => {
   const [isVisible, setIsVisible] = useState(false)
@@ -57,27 +61,36 @@ const useDebounce = (callback, delay) => {
 const LazyImage = ({ src, alt, className, ...props }) => {
   const [ref, isVisible] = useIntersectionObserver()
   const [isLoaded, setIsLoaded] = useState(false)
+  const [hasError, setHasError] = useState(false)
 
   return (
-    <div ref={ref} className="relative w-full h-full">
-      {!isVisible && (
-        <div className="absolute inset-0 bg-gray-700 animate-pulse" />
+    <div ref={ref} className="relative w-full h-full bg-royal">
+      {!isVisible && !hasError && (
+        <div className="absolute inset-0 bg-royal animate-pulse" />
       )}
-      {isVisible && (
+      {isVisible && !hasError && (
         <img
           src={src}
           alt={alt}
-          className={`transition-opacity duration-300 ${isLoaded ? 'opacity-100' : 'opacity-0'} ${className}`}
+          className={`transition-opacity duration-500 ${isLoaded ? 'opacity-100' : 'opacity-0'} ${className}`}
           onLoad={() => setIsLoaded(true)}
+          onError={() => setHasError(true)}
           loading="lazy"
           {...props}
         />
+      )}
+      {hasError && (
+        <div className="absolute inset-0 flex flex-col items-center justify-center gap-2 text-champagne/50">
+          <ImageIcon size={28} strokeWidth={1.25} />
+          <span className="font-script text-lg">hình ảnh đang được sắp xếp</span>
+        </div>
       )}
     </div>
   )
 }
 
 const Portfolio = () => {
+  const reduceMotion = useReducedMotion()
   const [activeFilter, setActiveFilter] = useState('all')
   const [selectedImage, setSelectedImage] = useState(null)
   const [selectedVideo, setSelectedVideo] = useState(null)
@@ -90,7 +103,7 @@ const Portfolio = () => {
     { id: 'all', name: 'Tất cả' },
     { id: 'editor', name: 'Biên tập & Biên kịch', icon: FileText },
     { id: 'creator', name: 'Content Creator', icon: FileText },
-    { id: 'media', name: 'Media & Chụp ảnh', icon: Image },
+    { id: 'media', name: 'Media & Chụp ảnh', icon: ImageIcon },
     { id: 'video', name: 'Quay dựng', icon: Video },
     { id: 'design', name: 'Thiết kế', icon: Palette },
   ]
@@ -155,7 +168,7 @@ const Portfolio = () => {
       type: 'text',
     },
 
-    // Content Creator (giữ mockup do folder trống)
+    // Content Creator (mockup — chưa có sản phẩm thực tế)
     {
       id: 2,
       category: 'creator',
@@ -163,6 +176,7 @@ const Portfolio = () => {
       description: 'Campaign TikTok đạt 1M views với hashtag viral',
       thumbnail: 'https://images.unsplash.com/photo-1611162617474-5b21e879e113?w=800&h=600&fit=crop',
       type: 'social',
+      mock: true,
     },
     {
       id: 3,
@@ -171,6 +185,7 @@ const Portfolio = () => {
       description: 'Series Reels về lifestyle với engagement rate 8%',
       thumbnail: 'https://images.unsplash.com/photo-1611162616305-c69b3fa7fbe0?w=800&h=600&fit=crop',
       type: 'social',
+      mock: true,
     },
 
     // Media & Chụp ảnh - Tất cả ảnh
@@ -198,7 +213,7 @@ const Portfolio = () => {
       videoUrl: '/videos/LAMKICH_TAP CUOI_0406.mov',
     },
 
-    // Thiết kế (giữ mockup do folder trống)
+    // Thiết kế (mockup — chưa có sản phẩm thực tế)
     {
       id: 9,
       category: 'design',
@@ -206,6 +221,7 @@ const Portfolio = () => {
       description: 'Thiết kế poster cho festival âm nhạc',
       thumbnail: 'https://images.unsplash.com/photo-1561070791-2526d30994b5?w=800&h=600&fit=crop',
       type: 'design',
+      mock: true,
     },
     {
       id: 10,
@@ -214,6 +230,7 @@ const Portfolio = () => {
       description: 'Bộ nhận diện thương hiệu cho startup',
       thumbnail: 'https://images.unsplash.com/photo-1558655146-9f40138edfeb?w=800&h=600&fit=crop',
       type: 'design',
+      mock: true,
     },
   ]
 
@@ -246,253 +263,315 @@ const Portfolio = () => {
     setCurrentPage(1)
   }, 150)
 
+  // Close modals on Escape + lock body scroll while open
+  useEffect(() => {
+    const onKey = (e) => {
+      if (e.key === 'Escape') {
+        setSelectedImage(null)
+        setSelectedVideo(null)
+      }
+    }
+    if (selectedImage || selectedVideo) {
+      window.addEventListener('keydown', onKey)
+      document.body.style.overflow = 'hidden'
+    }
+    return () => {
+      window.removeEventListener('keydown', onKey)
+      document.body.style.overflow = ''
+    }
+  }, [selectedImage, selectedVideo])
+
+  const openMedia = (project) => {
+    setVideoError(false)
+    if (project.type === 'gallery' || project.type === 'text') {
+      setSelectedImage({ src: project.fullImage || project.thumbnail, title: project.title })
+    } else if (project.type === 'video') {
+      setSelectedVideo(project.videoUrl)
+    }
+  }
+
   return (
-    <section id="portfolio" className="py-20 bg-soft-beige">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        {/* Section Title */}
+    <section id="portfolio" className="relative py-24 bg-midnight overflow-hidden">
+      <NightBackdrop castle glass />
+      <BotanicalSprig className="absolute left-4 top-32 w-9 h-36 opacity-20 hidden lg:block" />
+      <BotanicalSprig flip className="absolute right-4 top-32 w-9 h-36 opacity-20 hidden lg:block" />
+
+      <div className="relative max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+        <RoyalSectionHeading
+          eyebrow="chương ba"
+          title="Những trang đã viết"
+          subtitle="Bộ sưu tập trong cuốn storybook hoàng gia — từng khung hình là một chương nhỏ"
+        />
+
+        {/* Chapter ribbon filters */}
         <motion.div
-          initial={{ opacity: 0, y: 20 }}
+          initial={reduceMotion ? false : { opacity: 0, y: 18 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
-          className="text-center mb-16"
+          className="relative mx-auto mb-14 max-w-4xl"
+          role="group"
+          aria-label="Lọc dự án theo danh mục"
         >
-          <h2 className="text-4xl sm:text-5xl font-bold mb-4 text-sea-blue-dark font-serif">
-            Dự án đã thực hiện
-          </h2>
-          <div className="w-24 h-1 bg-gradient-to-r from-sea-blue-primary to-sea-blue-dark mx-auto rounded-full" />
+          <div className="absolute inset-x-8 top-1/2 h-px -translate-y-1/2 bg-gradient-to-r from-transparent via-champagne/35 to-transparent hidden sm:block" aria-hidden="true" />
+          <div className="relative flex flex-wrap justify-center gap-2.5">
+            {categories.map((category) => {
+              const Icon = category.icon
+              const isActive = activeFilter === category.id
+              return (
+                <motion.button
+                  key={category.id}
+                  onClick={() => handleFilterChange(category.id)}
+                  whileHover={reduceMotion ? {} : { y: -2 }}
+                  whileTap={reduceMotion ? {} : { scale: 0.97 }}
+                  aria-pressed={isActive}
+                  className={`flex items-center gap-2 px-5 py-2.5 rounded-full text-[11px] tracking-widest-story uppercase font-medium transition-all duration-300 border ${
+                    isActive
+                      ? 'parchment paper-grain text-ink border-champagne/70 shadow-glow -translate-y-0.5'
+                      : 'bg-navy/80 text-champagne/70 border-champagne/25 hover:border-champagne/55 hover:text-champagne hover:-translate-y-0.5 backdrop-blur-sm'
+                  }`}
+                >
+                  {Icon && <Icon size={15} strokeWidth={1.5} />}
+                  <span>{category.name}</span>
+                </motion.button>
+              )
+            })}
+          </div>
         </motion.div>
 
-        {/* Filter Buttons */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          className="flex flex-wrap justify-center gap-3 mb-12"
-        >
-          {categories.map((category) => {
-            const Icon = category.icon
-            return (
-              <motion.button
-                key={category.id}
-                onClick={() => handleFilterChange(category.id)}
-                whileHover={{ scale: 1.05 }}
-                whileTap={{ scale: 0.95 }}
-                className={`flex items-center gap-2 px-4 py-2 rounded-full transition-all ${
-                  activeFilter === category.id
-                    ? 'bg-gradient-to-r from-sea-blue-primary to-sea-blue-dark text-white'
-                    : 'bg-white text-sea-blue-dark hover:bg-soft-beige-dark border border-sea-blue-primary/20'
-                }`}
-              >
-                {Icon && <Icon size={16} />}
-                <span className="text-sm sm:text-base">{category.name}</span>
-              </motion.button>
-            )
-          })}
-        </motion.div>
-
-        {/* Projects Grid */}
+        {/* Storybook plate grid */}
         <AnimatePresence mode="wait">
           <motion.div
             key={`${activeFilter}-${currentPage}`}
-            initial={{ opacity: 0, y: 20 }}
+            initial={reduceMotion ? false : { opacity: 0, y: 18 }}
             animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -20 }}
-            transition={{ duration: 0.2 }}
-            className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6"
+            exit={reduceMotion ? { opacity: 0 } : { opacity: 0, y: -14 }}
+            transition={{ duration: 0.4 }}
+            className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-9"
           >
-            {currentProjects.map((project) => (
-              <motion.div
+            {currentProjects.map((project, i) => (
+              <motion.article
                 key={project.id}
                 layout
-                initial={{ opacity: 0, scale: 0.9 }}
-                animate={{ opacity: 1, scale: 1 }}
-                exit={{ opacity: 0, scale: 0.9 }}
-                whileHover={{ y: -8 }}
-                className="group relative bg-white rounded-xl overflow-hidden border border-sea-blue-primary/20 hover:border-sea-blue-primary shadow-sm hover:shadow-lg transition-all"
+                initial={reduceMotion ? false : { opacity: 0, y: 22 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={reduceMotion ? { opacity: 0 } : { opacity: 0, scale: 0.97 }}
+                transition={{ duration: 0.45, delay: reduceMotion ? 0 : Math.min(i * 0.04, 0.24) }}
+                className="group relative"
               >
-                {/* Thumbnail */}
-                <div
-                  className="relative aspect-video overflow-hidden cursor-pointer"
-                  onClick={() => {
-                    if (project.type === 'gallery' || project.type === 'text') {
-                      setSelectedImage(project.fullImage || project.thumbnail)
-                    } else if (project.type === 'video') {
-                      setSelectedVideo(project.videoUrl)
-                    }
-                  }}
-                >
-                  <LazyImage
-                    src={project.thumbnail}
-                    alt={project.title}
-                    className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
-                  />
-                  
-                  {/* Overlay for video type */}
-                  {project.type === 'video' && (
-                    <div className="absolute inset-0 bg-black/50 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
-                      <motion.div
-                        whileHover={{ scale: 1.1 }}
-                        whileTap={{ scale: 0.9 }}
-                        className="w-16 h-16 bg-sea-blue-primary rounded-full flex items-center justify-center"
-                      >
-                        <Play size={24} className="text-white fill-current ml-1" />
-                      </motion.div>
-                    </div>
-                  )}
+                {/* Vintage illustrated plate */}
+                <div className="relative royal-frame p-1 sm:p-[5px] shadow-royal hover:shadow-royal-lg transition-shadow duration-500">
+                  <CornerFlourish className="absolute -top-1.5 -left-1.5 w-7 h-7 opacity-85 z-10" tone="#E8D4A8" />
+                  <CornerFlourish className="absolute -top-1.5 -right-1.5 w-7 h-7 -scale-x-100 opacity-85 z-10" tone="#E8D4A8" />
+                  <CornerFlourish className="absolute -bottom-1.5 -left-1.5 w-7 h-7 -scale-y-100 opacity-85 z-10" tone="#E8D4A8" />
+                  <CornerFlourish className="absolute -bottom-1.5 -right-1.5 w-7 h-7 -scale-100 opacity-85 z-10" tone="#E8D4A8" />
+                  <div className="absolute inset-[2px] rounded-[0.2rem] border border-champagne/35 pointer-events-none" aria-hidden="true" />
 
-                  {/* Overlay for gallery type */}
-                  {(project.type === 'gallery' || project.type === 'text') && (
-                    <div className="absolute inset-0 bg-black/30 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
-                      <Image size={32} className="text-white" />
-                    </div>
-                  )}
+                  <div
+                    className="relative overflow-hidden rounded-[0.15rem] bg-[#F8F1E3] border border-[#2A1F16]/25 cursor-pointer"
+                    onClick={() => openMedia(project)}
+                    role="button"
+                    tabIndex={0}
+                    onKeyDown={(e) => { if (e.key === 'Enter') openMedia(project) }}
+                    aria-label={`Xem ${project.title}`}
+                  >
+                    <div className="relative aspect-[4/3] overflow-hidden m-1 rounded-[0.1rem]">
+                      <LazyImage
+                        src={project.thumbnail}
+                        alt={project.title}
+                        className="w-full h-full object-cover transition-transform duration-700 ease-out group-hover:scale-[1.05]"
+                      />
 
-                  {/* Category badge */}
-                  <div className="absolute top-3 left-3">
-                    <span className="px-3 py-1 bg-sea-blue-primary/90 text-white text-xs rounded-full">
-                      {categories.find(c => c.id === project.category)?.name}
-                    </span>
+                      <div className="absolute top-2 left-2 flex flex-col items-start gap-1 z-[1]">
+                        <RoyalBadge className="!bg-[#F5EBDD]/95 backdrop-blur-sm !border-champagne/55 !text-bronze">
+                          {categories.find(c => c.id === project.category)?.name}
+                        </RoyalBadge>
+                        {project.mock && (
+                          <RoyalBadge className="!bg-lilac/90 backdrop-blur-sm !border-bronze/25 !text-bronze">
+                            Minh họa
+                          </RoyalBadge>
+                        )}
+                      </div>
+
+                      <div className="absolute inset-0 bg-gradient-to-t from-[#1A1208]/70 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 flex items-end justify-center pb-4">
+                        <span className="px-4 py-1.5 parchment paper-grain text-bronze text-xs tracking-widest-story uppercase rounded-royal border border-champagne/50 translate-y-3 group-hover:translate-y-0 transition-transform duration-500 shadow-sm">
+                          {project.type === 'video' ? 'Mở cuộn phim' : 'Mở trang này'}
+                        </span>
+                      </div>
+                    </div>
+
+                    {/* Manuscript caption slip */}
+                    <div className="parchment paper-grain paper-edge mx-1 mb-1 mt-0 rounded-[0.15rem] border border-champagne/35 px-4 py-3.5">
+                      <CardOrnament className="mb-2" />
+                      <h3 className="font-display text-xl font-semibold text-ink mb-1 leading-snug group-hover:text-bronze transition-colors">
+                        {project.title}
+                      </h3>
+                      <p className="text-bronze/70 text-sm leading-relaxed line-clamp-2">
+                        {project.description}
+                      </p>
+                    </div>
                   </div>
                 </div>
-
-                {/* Content */}
-                <div className="p-5">
-                  <h3 className="text-lg font-semibold text-sea-blue-dark mb-2 group-hover:text-sea-blue-primary transition-colors">
-                    {project.title}
-                  </h3>
-                  <p className="text-sea-blue-primary/70 text-sm line-clamp-2">
-                    {project.description}
-                  </p>
-                </div>
-              </motion.div>
+              </motion.article>
             ))}
           </motion.div>
         </AnimatePresence>
 
-        {/* Pagination Controls */}
         {totalPages > 1 && (
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
+          <motion.nav
+            initial={{ opacity: 0, y: 16 }}
             animate={{ opacity: 1, y: 0 }}
-            className="flex justify-center items-center gap-4 mt-12"
+            className="flex justify-center items-center gap-4 mt-14"
+            aria-label="Phân trang dự án"
           >
-            <motion.button
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.95 }}
+            <RoyalButton variant="night" className="!rounded-full !px-5 !py-2.5 !text-sm normal-case !tracking-wide"
               onClick={() => setCurrentPage(prev => Math.max(1, prev - 1))}
               disabled={currentPage === 1}
-              className="px-4 py-2 bg-white text-sea-blue-dark rounded-lg disabled:opacity-50 disabled:cursor-not-allowed hover:bg-soft-beige-dark border border-sea-blue-primary/20 transition-colors"
             >
-              Trước
-            </motion.button>
+              ← Trang trước
+            </RoyalButton>
 
             <div className="flex gap-2">
               {Array.from({ length: totalPages }, (_, i) => i + 1).map((page) => (
-                <motion.button
+                <button
                   key={page}
-                  whileHover={{ scale: 1.05 }}
-                  whileTap={{ scale: 0.95 }}
                   onClick={() => setCurrentPage(page)}
-                  className={`px-4 py-2 rounded-lg transition-colors ${
+                  aria-current={currentPage === page ? 'page' : undefined}
+                  className={`w-10 h-10 rounded-full text-sm transition-all duration-300 border ${
                     currentPage === page
-                      ? 'bg-gradient-to-r from-sea-blue-primary to-sea-blue-dark text-white'
-                      : 'bg-white text-sea-blue-dark hover:bg-soft-beige-dark border border-sea-blue-primary/20'
+                      ? 'bg-gradient-to-br from-champagne to-gold text-[#3A2A1E] border-champagne shadow-glow'
+                      : 'bg-royal/70 text-night/70 border-champagne/30 hover:border-champagne/60 hover:text-champagne'
                   }`}
                 >
                   {page}
-                </motion.button>
+                </button>
               ))}
             </div>
 
-            <motion.button
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.95 }}
+            <RoyalButton variant="night" className="!rounded-full !px-5 !py-2.5 !text-sm normal-case !tracking-wide"
               onClick={() => setCurrentPage(prev => Math.min(totalPages, prev + 1))}
               disabled={currentPage === totalPages}
-              className="px-4 py-2 bg-white text-sea-blue-dark rounded-lg disabled:opacity-50 disabled:cursor-not-allowed hover:bg-soft-beige-dark border border-sea-blue-primary/20 transition-colors"
             >
-              Sau
-            </motion.button>
-          </motion.div>
+              Trang sau →
+            </RoyalButton>
+          </motion.nav>
         )}
 
-        {/* Empty state */}
         {filteredProjects.length === 0 && (
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
-            className="text-center py-12"
+            className="text-center py-16"
           >
-            <p className="text-sea-blue-primary/70 text-lg">Không có dự án trong danh mục này</p>
+            <p className="font-script text-3xl text-champagne/80">Chương này còn đang viết…</p>
+            <p className="text-night/60 text-sm mt-2">Không có dự án trong danh mục này</p>
           </motion.div>
         )}
       </div>
 
-      {/* Image Modal */}
+      {/* Lightbox — open storybook leaf */}
       <AnimatePresence>
         {selectedImage && (
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className="fixed inset-0 z-50 bg-black/90 flex items-center justify-center p-4"
+            className="fixed inset-0 z-50 bg-[#05070F]/92 backdrop-blur-sm flex items-center justify-center p-4"
             onClick={() => setSelectedImage(null)}
+            role="dialog"
+            aria-modal="true"
+            aria-label="Xem ảnh toàn màn hình"
           >
             <motion.button
-              initial={{ scale: 0 }}
+              initial={reduceMotion ? false : { scale: 0 }}
               animate={{ scale: 1 }}
-              exit={{ scale: 0 }}
+              exit={reduceMotion ? { opacity: 0 } : { scale: 0 }}
               onClick={() => setSelectedImage(null)}
-              className="absolute top-4 right-4 p-2 bg-white/10 rounded-full hover:bg-white/20 transition-colors"
+              className="absolute top-5 right-5 p-2.5 bg-royal/70 rounded-full hover:bg-royal border border-champagne/45 transition-colors z-10"
+              aria-label="Đóng"
             >
-              <X size={24} className="text-white" />
+              <X size={22} className="text-champagne" />
             </motion.button>
-            <motion.img
-              initial={{ scale: 0.8 }}
-              animate={{ scale: 1 }}
-              exit={{ scale: 0.8 }}
-              src={selectedImage}
-              alt="Full size"
-              className="max-w-full max-h-[90vh] object-contain rounded-lg"
+            <motion.div
+              initial={reduceMotion ? false : { scale: 0.88, opacity: 0, y: 16 }}
+              animate={{ scale: 1, opacity: 1, y: 0 }}
+              exit={reduceMotion ? { opacity: 0 } : { scale: 0.94, opacity: 0 }}
+              transition={{ duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
+              className="relative royal-frame p-1.5 sm:p-2 shadow-royal-lg max-w-[92vw]"
               onClick={(e) => e.stopPropagation()}
-            />
+            >
+              <CornerFlourish className="absolute -top-1.5 -left-1.5 w-8 h-8 opacity-85" tone="#E8D4A8" />
+              <CornerFlourish className="absolute -top-1.5 -right-1.5 w-8 h-8 -scale-x-100 opacity-85" tone="#E8D4A8" />
+              <CornerFlourish className="absolute -bottom-1.5 -left-1.5 w-8 h-8 -scale-y-100 opacity-85" tone="#E8D4A8" />
+              <CornerFlourish className="absolute -bottom-1.5 -right-1.5 w-8 h-8 -scale-100 opacity-85" tone="#E8D4A8" />
+              <div className="rounded-[0.15rem] border border-champagne/35 p-1 bg-[#FBF6EE] overflow-hidden">
+                <img
+                  src={selectedImage.src}
+                  alt={selectedImage.title}
+                  className="max-w-[86vw] max-h-[68vh] object-contain rounded-[0.1rem] mx-auto"
+                />
+                {selectedImage.title && (
+                  <div className="parchment paper-grain mt-1.5 px-4 py-2 rounded-royal border border-champagne/35 flex items-center justify-center gap-3">
+                    <span className="w-4 h-px bg-champagne/55" aria-hidden="true" />
+                    <p className="font-display text-sm text-bronze">{selectedImage.title}</p>
+                    <span className="w-4 h-px bg-champagne/55" aria-hidden="true" />
+                  </div>
+                )}
+              </div>
+            </motion.div>
           </motion.div>
         )}
       </AnimatePresence>
 
-      {/* Video Modal */}
+      {/* Video modal — vintage reel plate */}
       <AnimatePresence>
         {selectedVideo && (
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className="fixed inset-0 z-50 bg-black/90 flex items-center justify-center p-4"
+            className="fixed inset-0 z-50 bg-[#05070F]/95 backdrop-blur-sm flex items-center justify-center p-4"
             onClick={() => setSelectedVideo(null)}
+            role="dialog"
+            aria-modal="true"
+            aria-label="Xem video"
           >
             <motion.button
-              initial={{ scale: 0 }}
+              initial={reduceMotion ? false : { scale: 0 }}
               animate={{ scale: 1 }}
-              exit={{ scale: 0 }}
+              exit={reduceMotion ? { opacity: 0 } : { scale: 0 }}
               onClick={() => setSelectedVideo(null)}
-              className="absolute top-4 right-4 p-2 bg-white/10 rounded-full hover:bg-white/20 transition-colors z-10"
+              className="absolute top-5 right-5 p-2.5 bg-royal/70 rounded-full hover:bg-royal border border-champagne/45 transition-colors z-10"
+              aria-label="Đóng"
             >
-              <X size={24} className="text-white" />
+              <X size={22} className="text-champagne" />
             </motion.button>
             <motion.div
-              initial={{ scale: 0.8 }}
-              animate={{ scale: 1 }}
-              exit={{ scale: 0.8 }}
-              className="w-full max-w-5xl"
+              initial={reduceMotion ? false : { scale: 0.92, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              exit={reduceMotion ? { opacity: 0 } : { scale: 0.96, opacity: 0 }}
+              className="w-full max-w-4xl"
               onClick={(e) => e.stopPropagation()}
             >
-              <video
-                src={selectedVideo}
-                controls
-                autoPlay
-                preload="metadata"
-                className="w-full rounded-lg"
-              />
+              {videoError ? (
+                <div className="aspect-video parchment paper-grain rounded-royal border border-champagne/50 flex flex-col items-center justify-center gap-3 text-bronze/70 shadow-royal">
+                  <Play size={32} strokeWidth={1.25} />
+                  <p className="font-script text-3xl text-bronze">Video tạm thời không khả dụng</p>
+                  <p className="text-xs text-bronze/70 tracking-wide">Tệp video chưa được xuất bản — vui lòng quay lại sau</p>
+                </div>
+              ) : (
+                <div className="royal-frame p-1.5 sm:p-2 shadow-royal-lg">
+                  <div className="rounded-[0.15rem] border border-champagne/35 p-0.5 bg-[#FBF6EE] overflow-hidden">
+                    <video
+                      src={selectedVideo}
+                      controls
+                      autoPlay
+                      preload="metadata"
+                      className="w-full rounded-[0.1rem]"
+                      onError={() => setVideoError(true)}
+                    />
+                  </div>
+                </div>
+              )}
             </motion.div>
           </motion.div>
         )}
