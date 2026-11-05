@@ -4,17 +4,19 @@ import { CornerFlourish, SparkleField, FireflyField, MoonGlow } from './decor/Or
 
 const STORAGE_KEY = 'midnight-intro-seen'
 const BASE = import.meta.env.BASE_URL
-const DESKTOP_SRC = `${BASE}media/midnight-royal-intro-desktop.mp4`
-const MOBILE_SRC = DESKTOP_SRC
+/** Deployed at public root (NOT under gitignored public/media/) */
+const INTRO_SRC = `${BASE}midnight-royal-intro-desktop.mp4`
 
 const EXPAND_LEAD_S = 2.8
 const IMMERSION_HOLD_MS = 450
 const FADE_MS = 900
+const LOAD_TIMEOUT_MS = 10000
 
 /**
  * Midnight Royal Vintage Storybook — cinematic intro.
  *
  * loading → ready → playing → expanding → immersing → transition → done
+ * (error is recoverable via retry / enter site)
  *
  * Bloom = transform scale from measured frame → cover viewport (no width snaps).
  * Phase timers live in phase-keyed useEffects (overflow cleanup must never clear them).
@@ -73,6 +75,15 @@ const Intro = ({ onComplete }) => {
     return () => clearTimeout(id)
   }, [phase])
 
+  /** Never leave the spinner hanging if the MP4 404s / stalls on Pages */
+  useEffect(() => {
+    if (phase !== 'loading') return
+    const id = setTimeout(() => {
+      setPhase((p) => (p === 'loading' ? 'error' : p))
+    }, LOAD_TIMEOUT_MS)
+    return () => clearTimeout(id)
+  }, [phase])
+
   const measureBloomScale = useCallback(() => {
     const el = stageRef.current
     if (!el) return 1.85
@@ -102,7 +113,7 @@ const Intro = ({ onComplete }) => {
 
   const handlePlaying = useCallback(() => {
     setNeedsTap(false)
-    setPhase((p) => (p === 'ready' || p === 'playing' ? 'playing' : p))
+    setPhase((p) => (p === 'ready' || p === 'playing' || p === 'loading' ? 'playing' : p))
   }, [])
 
   const handleTimeUpdate = useCallback(() => {
@@ -136,11 +147,9 @@ const Intro = ({ onComplete }) => {
   }, [])
 
   const handleError = useCallback(() => {
-    const v = videoRef.current
-    if (v && !v.error) return
-    v?.pause()
+    videoRef.current?.pause()
     setNeedsTap(false)
-    setPhase('error')
+    setPhase((p) => (p === 'done' || p === 'transition' || p === 'immersing' ? p : 'error'))
   }, [])
 
   const handleRetry = useCallback(() => {
@@ -241,16 +250,14 @@ const Intro = ({ onComplete }) => {
                     muted
                     playsInline
                     preload="auto"
+                    src={INTRO_SRC}
                     onCanPlay={handleCanPlay}
                     onPlaying={handlePlaying}
                     onTimeUpdate={handleTimeUpdate}
                     onEnded={handleEnded}
                     onError={handleError}
                     aria-hidden="true"
-                  >
-                    <source media="(max-width: 768px)" src={MOBILE_SRC} type="video/mp4" />
-                    <source src={DESKTOP_SRC} type="video/mp4" />
-                  </video>
+                  />
 
                   {showSpinner && (
                     <div className="absolute inset-0 z-20 flex items-center justify-center bg-[#0B0A14]/75">

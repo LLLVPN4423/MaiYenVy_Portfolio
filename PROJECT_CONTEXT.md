@@ -4,7 +4,7 @@
 >
 > Detailed audit evidence lives in `docs/project-intelligence/` (14 documents). This file summarizes verified state and tracks change history — it intentionally does not duplicate those docs.
 >
-> **Last verified:** 2026-11-05 · **Last context update:** 2026-11-05 (Bright fireflies + original garden spirits)
+> **Last verified:** 2026-11-05 · **Last context update:** 2026-11-05 (Deploy intro MP4 — fix github.io hang)
 
 ---
 
@@ -56,7 +56,7 @@ graph TD
 | Lazy image loading | COMPLETE | + onError fallback | 2026-11-05 |
 | Image lightbox | COMPLETE | Soft-frame modal on midnight overlay, Esc-close, scroll-lock, fireflies | 2026-11-05 |
 | Video playback | **BROKEN** | `public/videos/` gitignored → 404 on Pages; works locally; error UI wired | 2026-11-05 |
-| Video intro | COMPLETE (local) | Scale-based bloom (measured FLIP); auto handoff via phase timers (immersing→transition→done). Hollow soft-frame. TD-16 still blocks deploy; no 9:16 mobile cut | 2026-11-05 |
+| Video intro | COMPLETE | Deployable `public/midnight-royal-intro-desktop.mp4`; bloom + auto handoff; 10s load timeout → error UI (no spinner hang). No dedicated 9:16 mobile cut | 2026-11-05 |
 | Portfolio section UI | COMPLETE | Midnight Royal Vintage Storybook plates: soft-frame + filigree, manuscript captions, chapter ribbon filters, storybook lightbox | 2026-11-05 |
 | Contact info | COMPLETE | Royal letter panel; mailto/tel/address verified channels only | 2026-11-05 |
 | Social links | NOT IMPLEMENTED | Placeholder `yourprofile` links REMOVED (were fake); re-add only with real URLs | 2026-11-05 |
@@ -71,13 +71,13 @@ graph TD
 - **Git branch:** `main` (only branch; tracks `origin/main`)
 - **HEAD commit:** see latest CHANGE entry (site redesign + ambient night life)
 - **Working tree:** expect clean after CHANGE-018 push
-- **Latest completed phase:** Bright ambient fireflies + original garden spirits (CHANGE-018)
-- **Implementation state:** Midnight Royal Vintage Storybook — dreamy palace-garden night, shared ambient fireflies (z-25) + 5 original winged garden spirits, royal frames, beanstalk experience, cinematic intro
-- **Known bugs:** portfolio video modal 404 in production (TD-02); intro MP4 gitignored under `public/media/` (TD-16); mock items badged "Minh họa" (TD-10)
-- **Outstanding issues:** see Section H (TD-01…TD-17; TD-08/09/11 resolved)
-- **Blockers:** TD-16 for intro on Pages; TD-02 for portfolio videos
-- **Last successful validation:** code inspection CHANGE-018 (z-index + brighter flies); no full `npm run build` this pass
-- **Next recommended task:** relocate intro MP4 out of gitignored `public/media/` (or add exception) so Pages serves the intro
+- **Latest completed phase:** Deploy intro MP4 to Pages (CHANGE-019)
+- **Implementation state:** Midnight Royal Vintage Storybook — dreamy palace-garden night, ambient fireflies/spirits, royal frames, beanstalk experience, cinematic intro with deployable root MP4
+- **Known bugs:** portfolio video modal 404 in production (TD-02); mock items badged "Minh họa" (TD-10)
+- **Outstanding issues:** see Section H (TD-01…TD-17; TD-08/09/11 resolved; TD-16 resolved via CHANGE-019)
+- **Blockers:** TD-02 for portfolio videos
+- **Last successful validation:** confirmed live URL `/media/...mp4` was 404; root MP4 staged for deploy; Intro load-timeout + error path hardened
+- **Next recommended task:** after Actions deploy, hard-refresh Pages and clear `sessionStorage['midnight-intro-seen']` to verify intro plays
 
 ## E. TECHNICAL CONVENTIONS
 
@@ -150,7 +150,7 @@ Active issues (mirrors `docs/project-intelligence/TECHNICAL_DEBT.md`; remove onl
 | TD-13 | No lint/format/test tooling | MEDIUM | repo root | OPEN | Add ESLint/Prettier + smoke test |
 | TD-14 | Redundant media-copy step in deploy.yml | LOW | `.github/workflows/deploy.yml:40-45` | OPEN | Remove after verifying |
 | TD-15 | No error boundary; OG tags absent (favicon + description added) | LOW | `App.jsx`, `index.html` | OPEN (partial) | Add boundary + OG meta |
-| TD-16 | Intro video `public/media/fairytale-intro.mp4` is inside gitignored `public/media/` → will 404 on Pages | HIGH (for deploy) | `public/media/`, `.gitignore` | OPEN (superseded) | New intro uses `midnight-royal-intro-{desktop,mobile}.mp4` in same dir — same gitignore problem applies once files arrive; relocate or add exception before deploy |
+| TD-16 | Intro video was inside gitignored `public/media/` → 404 / spinner hang on Pages | HIGH (for deploy) | `public/media/`, `.gitignore` | **RESOLVED (CHANGE-019)** | Canonical asset now `public/midnight-royal-intro-desktop.mp4` (~6.1 MB) + `!public/*.mp4`; Intro points at `${BASE}midnight-royal-intro-desktop.mp4` + 10s load timeout |
 | TD-17 | New intro video assets missing: `public/media/midnight-royal-intro-desktop.mp4` (16:9) and `-mobile.mp4` (9:16) do not exist | HIGH (for feature) | `Intro.jsx`, `public/media/` | PARTIALLY RESOLVED | Desktop asset now exists (copied from owner's `gemini_generated_video_a35a9bd3.mp4`); NO dedicated 9:16 mobile cut — same 16:9 film letterboxed on mobile. If owner supplies a portrait cut, add `public/media/midnight-royal-intro-mobile.mp4` and point `MOBILE_SRC` at it |
 
 ## I. DEVELOPMENT ROADMAP
@@ -291,6 +291,17 @@ Active issues (mirrors `docs/project-intelligence/TECHNICAL_DEBT.md`; remove onl
 - **Reason:** Owner screenshot showed solid gold→pink gradient before playback; reported long hang after video.
 - **Validation:** code inspection.
 - **Remaining issues:** post-end freeze could still occur via timer cleanup bug (fixed in CHANGE-011).
+
+### CHANGE-019 — 2026-11-05
+- **Agent/IDE:** Cursor (Composer)
+- **Task:** Fix github.io intro hang (video 404 / endless spinner)
+- **Type:** Bug Fix / Deploy
+- **Status:** COMPLETED — committing & pushing to origin/main
+- **Files modified:** `public/midnight-royal-intro-desktop.mp4` (copied from gitignored `public/media/`, ~6.1 MB), `.gitignore` (`!public/*.mp4`), `src/components/Intro.jsx` (src → root MP4; removed brittle `!v.error` guard; 10s load timeout → error UI), `PROJECT_CONTEXT.md`
+- **Root cause:** Intro pointed at `/MaiYenVy_Portfolio/media/midnight-royal-intro-desktop.mp4` under gitignored `public/media/` → live HEAD returned 404; spinner stayed on `loading` because error path was too strict / slow.
+- **Reason:** Owner: opening via git.io link left the intro video hung.
+- **Validation:** live URL 404 confirmed before fix; asset copied to deployable public root; no full `npm run build` this pass (CI will build on push).
+- **Remaining issues:** TD-02 (portfolio videos still gitignored), TD-10, TD-17 partial (no 9:16 cut).
 
 ### CHANGE-018 — 2026-11-05
 - **Agent/IDE:** Cursor (Composer)

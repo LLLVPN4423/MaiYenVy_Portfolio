@@ -39,3 +39,5 @@ public/videos/
 !public/*.JPG
 !public/*.png
 !public/*.PNG
+!public/*.mp4
+!public/*.MP4
