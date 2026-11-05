@@ -4,7 +4,7 @@
 >
 > Detailed audit evidence lives in `docs/project-intelligence/` (14 documents). This file summarizes verified state and tracks change history — it intentionally does not duplicate those docs.
 >
-> **Last verified:** 2026-11-05 · **Last context update:** 2026-11-05 (Dreamy garden night + perf ambient fireflies — pushing)
+> **Last verified:** 2026-11-05 · **Last context update:** 2026-11-05 (Bright fireflies + original garden spirits)
 
 ---
 
@@ -68,15 +68,15 @@ graph TD
 
 ## D. CURRENT PROJECT STATE
 
-- **Git branch:** `main` (only branch; == `origin/main`)
-- **HEAD commit:** `5b0010c` "Add Experience section with timeline layout for work history" (2026-08-25)
-- **Working tree:** dirty — local redesign uncommitted (Intro, Ornaments, all sections, palette, docs/AGENTS/PROJECT_CONTEXT untracked or modified)
-- **Latest completed phase:** Soft Disney-princess polish + intro fullscreen bloom (CHANGE-009)
-- **Implementation state:** Midnight Royal Vintage Storybook (dreamy palace-garden night, ambient fireflies, royal frames, beanstalk experience, cinematic intro). Pushing to origin/main.
-- **Known bugs:** portfolio video modal 404 in production (TD-02); intro MP4 gitignored under `public/media/` (TD-16 — will 404 on Pages until relocated); mock items badged "Minh họa" (TD-10)
+- **Git branch:** `main` (only branch; tracks `origin/main`)
+- **HEAD commit:** see latest CHANGE entry (site redesign + ambient night life)
+- **Working tree:** expect clean after CHANGE-018 push
+- **Latest completed phase:** Bright ambient fireflies + original garden spirits (CHANGE-018)
+- **Implementation state:** Midnight Royal Vintage Storybook — dreamy palace-garden night, shared ambient fireflies (z-25) + 5 original winged garden spirits, royal frames, beanstalk experience, cinematic intro
+- **Known bugs:** portfolio video modal 404 in production (TD-02); intro MP4 gitignored under `public/media/` (TD-16); mock items badged "Minh họa" (TD-10)
 - **Outstanding issues:** see Section H (TD-01…TD-17; TD-08/09/11 resolved)
 - **Blockers:** TD-16 for intro on Pages; TD-02 for portfolio videos
-- **Last successful validation:** prior build PASS (CHANGE-011); perf/garden changes are CSS/JS-only this pass
+- **Last successful validation:** code inspection CHANGE-018 (z-index + brighter flies); no full `npm run build` this pass
 - **Next recommended task:** relocate intro MP4 out of gitignored `public/media/` (or add exception) so Pages serves the intro
 
 ## E. TECHNICAL CONVENTIONS
@@ -291,6 +291,18 @@ Active issues (mirrors `docs/project-intelligence/TECHNICAL_DEBT.md`; remove onl
 - **Reason:** Owner screenshot showed solid gold→pink gradient before playback; reported long hang after video.
 - **Validation:** code inspection.
 - **Remaining issues:** post-end freeze could still occur via timer cleanup bug (fixed in CHANGE-011).
+
+### CHANGE-018 — 2026-11-05
+- **Agent/IDE:** Cursor (Composer)
+- **Task:** Restore bright fireflies + add copyright-safe garden spirits
+- **Type:** Bug Fix / Visual Refinement
+- **Status:** COMPLETED — committing & pushing to origin/main
+- **Files modified:** `src/index.css` (ambient z-index 24/25; brighter firefly keyframes; spirit-drift + wing-flutter), `Ornaments.jsx` (larger/brighter FireflyField; `GardenSpiritField` / `AmbientGardenSpirits` — original petal/moth/leaf-wing marks only), `App.jsx` (40 fireflies + 5 spirits), `PROJECT_CONTEXT.md`
+- **Root cause:** `.ambient-fireflies` was `z-index: 1` under `main` `z-[2]` + opaque `night-sky`, so flies were fully hidden; keyframes also faded to opacity 0.
+- **Creatures:** original SVG “tinh linh vườn” (petal / moth / leaf wings) — not based on Disney or any third-party character.
+- **Reason:** Owner reported fireflies gone/dim; asked for fairy-like beings without copyright risk.
+- **Validation:** code inspection (z-index stacking + animation floors). No automated tests. No full build this pass.
+- **Remaining issues:** TD-16, TD-02, TD-10.
 
 ### CHANGE-017 — 2026-11-05
 - **Agent/IDE:** Cursor (Composer)

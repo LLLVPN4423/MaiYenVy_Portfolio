@@ -449,7 +449,7 @@ export const SparkleField = ({ count = 14, className = '', tone = '#E2CA91' }) =
 }
 
 /**
- * FireflyField — performant golden fireflies (transform/opacity only).
+ * FireflyField — bright golden fireflies (transform/opacity only).
  * Prefer ONE shared ambient instance (see App) instead of per-section armies.
  */
 export const FireflyField = ({ count = 18, className = '' }) => {
@@ -459,14 +459,17 @@ export const FireflyField = ({ count = 18, className = '' }) => {
         const layer = i % 3
         return {
           left: `${(i * 37 + 7) % 98}%`,
-          bottom: `${(i * 23 + 3) % 82}%`,
-          size: layer === 0 ? 3.5 : layer === 1 ? 2.4 : 1.6,
-          duration: `${8 + (i % 6) * 1.8}s`,
-          delay: `${(i % 10) * 0.45}s`,
+          bottom: `${(i * 23 + 3) % 88}%`,
+          size: layer === 0 ? 5.5 : layer === 1 ? 4 : 2.8,
+          duration: `${7 + (i % 6) * 1.6}s`,
+          delay: `${(i % 10) * 0.4}s`,
+          color: layer === 0 ? '#FFF3C4' : layer === 1 ? '#FFE9B0' : '#F5D98A',
           glow:
             layer === 0
-              ? '0 0 8px 2px rgba(255,233,176,0.55)'
-              : '0 0 5px 1px rgba(232,212,168,0.4)',
+              ? '0 0 10px 3px rgba(255,236,170,0.95), 0 0 22px 6px rgba(255,210,120,0.45)'
+              : layer === 1
+                ? '0 0 8px 2px rgba(255,233,176,0.85), 0 0 16px 4px rgba(232,200,120,0.35)'
+                : '0 0 6px 2px rgba(245,217,138,0.75)',
         }
       }),
     [count]
@@ -474,7 +477,7 @@ export const FireflyField = ({ count = 18, className = '' }) => {
   return (
     <div
       className={`pointer-events-none absolute inset-0 overflow-hidden ${className}`}
-      style={{ contain: 'strict' }}
+      style={{ contain: 'paint' }}
       aria-hidden="true"
     >
       {flies.map((f, i) => (
@@ -486,7 +489,7 @@ export const FireflyField = ({ count = 18, className = '' }) => {
             bottom: f.bottom,
             width: f.size,
             height: f.size,
-            backgroundColor: '#FFE9B0',
+            backgroundColor: f.color,
             boxShadow: f.glow,
             animationDuration: f.duration,
             animationDelay: f.delay,
@@ -497,10 +500,91 @@ export const FireflyField = ({ count = 18, className = '' }) => {
   )
 }
 
-/** Fixed full-page firefly veil — mount once in App */
-export const AmbientFireflies = ({ count = 26 }) => (
+/** Fixed full-page firefly veil — mount once in App (z above section paint) */
+export const AmbientFireflies = ({ count = 36 }) => (
   <div className="ambient-fireflies" aria-hidden="true">
-    <FireflyField count={count} className="opacity-90" />
+    <FireflyField count={count} />
+  </div>
+)
+
+/**
+ * Original garden spirits — tiny winged night beings (not based on any copyrighted character).
+ * Soft moth / petal / leaf wings + luminous body; folklore “tinh linh vườn” only.
+ */
+const renderSpiritMark = (variant) => {
+  if (variant === 1) {
+    return (
+      <g>
+        <ellipse className="animate-wing-flutter" cx="5" cy="12" rx="6.5" ry="4.5" fill="#E8D4A8" opacity="0.55" />
+        <ellipse className="animate-wing-flutter" cx="19" cy="12" rx="6.5" ry="4.5" fill="#E8D4A8" opacity="0.55" />
+        <ellipse cx="12" cy="12" rx="2.6" ry="4" fill="#FFF0C8" />
+        <circle cx="12" cy="8.5" r="1.6" fill="#FFE9B0" />
+      </g>
+    )
+  }
+  if (variant === 2) {
+    return (
+      <g>
+        <path className="animate-wing-flutter" d="M12 10 C4 4 2 12 12 16 C22 12 20 4 12 10Z" fill="#D4E8C8" opacity="0.45" />
+        <circle cx="12" cy="12" r="2.8" fill="#FFF3C4" />
+        <circle cx="12" cy="12" r="1.2" fill="#FFFFFF" opacity="0.85" />
+      </g>
+    )
+  }
+  return (
+    <g>
+      <ellipse className="animate-wing-flutter" cx="6" cy="10" rx="7" ry="3.2" fill="#F8E7B8" opacity="0.5" transform="rotate(-28 6 10)" />
+      <ellipse className="animate-wing-flutter" cx="18" cy="10" rx="7" ry="3.2" fill="#F8E7B8" opacity="0.5" transform="rotate(28 18 10)" />
+      <circle cx="12" cy="11" r="3.2" fill="#FFE9B0" />
+      <circle cx="12" cy="11" r="1.4" fill="#FFF8E0" />
+    </g>
+  )
+}
+
+export const GardenSpiritField = ({ count = 5, className = '' }) => {
+  const spirits = React.useMemo(
+    () =>
+      Array.from({ length: count }, (_, i) => ({
+        left: `${8 + ((i * 19 + 5) % 80)}%`,
+        top: `${12 + ((i * 27 + 9) % 62)}%`,
+        size: 22 + (i % 3) * 6,
+        duration: `${11 + (i % 4) * 2.5}s`,
+        delay: `${i * 1.4}s`,
+        variant: i % 3,
+      })),
+    [count]
+  )
+  return (
+    <div
+      className={`pointer-events-none absolute inset-0 overflow-hidden ${className}`}
+      aria-hidden="true"
+    >
+      {spirits.map((s, i) => (
+        <svg
+          key={i}
+          viewBox="0 0 24 24"
+          className="animate-spirit-drift absolute"
+          style={{
+            left: s.left,
+            top: s.top,
+            width: s.size,
+            height: s.size,
+            filter: 'drop-shadow(0 0 6px rgba(255,233,176,0.55))',
+            animationDuration: s.duration,
+            animationDelay: s.delay,
+          }}
+        >
+          {renderSpiritMark(s.variant)}
+        </svg>
+      ))}
+    </div>
+  )
+}
+
+/** Fixed full-page garden spirits — few, original silhouettes */
+export const AmbientGardenSpirits = ({ count = 5 }) => (
+  <div className="ambient-spirits" aria-hidden="true">
+    <GardenSpiritField count={count} />
   </div>
 )
 

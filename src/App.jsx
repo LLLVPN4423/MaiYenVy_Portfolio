@@ -2,7 +2,8 @@ import React, { Suspense, lazy, useState } from 'react'
 import Navbar from './components/Navbar'
 import Intro from './components/Intro'
 import {
-  OrnamentDivider, BotanicalSprig, RoyalCrest, ChapterDivider, AmbientFireflies,
+  OrnamentDivider, BotanicalSprig, RoyalCrest, ChapterDivider,
+  AmbientFireflies, AmbientGardenSpirits,
 } from './components/decor/Ornaments'
 
 const Hero = lazy(() => import('./components/Hero'))
@@ -45,8 +46,9 @@ function App() {
 
   return (
     <div className="relative min-h-screen bg-midnight text-night">
-      {/* One shared firefly layer for the whole site (major lag fix) */}
-      <AmbientFireflies count={28} />
+      {/* Ambient night life — above section paint (z-24/25), below nav/modals (z-50) */}
+      <AmbientGardenSpirits count={5} />
+      <AmbientFireflies count={40} />
 
       <Intro onComplete={() => setIntroComplete(true)} />
       <Navbar />
